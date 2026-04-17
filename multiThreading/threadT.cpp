@@ -1,44 +1,108 @@
-// Member types
-// S.N.	Member type & description
-// 1	id
-// It is a thread id.
+#include <iostream>
+#include <thread>
+using namespace std;
 
-// 2	Native handle type
-// It is a native handle type.
+// sample function for thread
+void work() {
+    cout << "Thread running\n";
+}
 
-// Member functions
-// S.N.	Member function & description
-// 1	(constructor)
-// It is used to construct thread.
+int main()
+{
+    // ============================================================
+    // 🔷 CONSTRUCTOR
+    // creates and starts a thread immediately
+    // ============================================================
+    thread t1(work);   // starts execution of work()
 
-// 2	(destructor)
-// It is used to destructor thread.
 
-// 3	operator=
-// It is a move-assign thread.
+    // ============================================================
+    // 🔷 MEMBER TYPES
+    // ============================================================
 
-// 4	get_id
-// It is used to get thread id.
+    thread::id id = t1.get_id();  
+    // unique identifier of thread (used for comparison/logging)
 
-// 5	joinable
-// It is used to check if joinable.
+    thread::native_handle_type nh = t1.native_handle();  
+    // OS-level handle (platform dependent, rarely used directly)
 
-// 6	join
-// It is used to join thread.
 
-// 7	detach
-// It is used to detach thread.
+    // ============================================================
+    // 🔷 JOINABLE
+    // checks if thread is associated with execution
+    // true → must call join() or detach()
+    // ============================================================
+    if (t1.joinable()) {
+        cout << "Thread is joinable\n";
+    }
 
-// 8	swap
-// It is used to swap threads.
 
-// 9	native_handle
-// It is used to get native handle.
+    // ============================================================
+    // 🔷 JOIN
+    // waits for thread to finish (blocking call)
+    // after join → thread becomes non-joinable
+    // ============================================================
+    t1.join();
 
-// 10	hardware_concurrency [static]
-// It is used to detect hardware concurrency.
 
-// Non-member overloads
-// S.N.	Non-member overload & description
-// 1	swap (thread)
-// It is used to swap threads.
+    // ============================================================
+    // 🔷 DETACH
+    // separates thread from object (runs independently)
+    // ⚠️ no control after detach (danger if misused)
+    // ============================================================
+    thread t2(work);
+    t2.detach();   // runs in background
+
+
+    // ============================================================
+    // 🔷 MOVE ASSIGNMENT (operator=)
+    // threads are NON-COPYABLE but MOVEABLE
+    // ============================================================
+    thread t3(work);
+    thread t4 = move(t3);   // ownership transferred
+
+
+    // ============================================================
+    // 🔷 SWAP (member)
+    // exchange thread ownership
+    // ============================================================
+    thread t5(work);
+    thread t6(work);
+    t5.swap(t6);
+
+
+    // ============================================================
+    // 🔷 NATIVE HANDLE
+    // gives underlying OS handle (advanced usage)
+    // ============================================================
+    auto handle = t5.native_handle();
+
+
+    // ============================================================
+    // 🔷 HARDWARE CONCURRENCY (static)
+    // number of concurrent threads supported by system
+    // hint only (may return 0 if unknown)
+    // ============================================================
+    unsigned int cores = thread::hardware_concurrency();
+    cout << "Cores: " << cores << endl;
+
+
+    // ============================================================
+    // 🔷 NON-MEMBER SWAP
+    // same as member swap
+    // ============================================================
+    swap(t5, t6);
+
+
+    // ============================================================
+    // 🔥 DESTRUCTOR (IMPORTANT RULE)
+    // if thread is still joinable → program TERMINATES
+    // MUST call join() or detach() before destruction
+    // ============================================================
+
+    if (t4.joinable()) t4.join();
+    if (t5.joinable()) t5.join();
+    if (t6.joinable()) t6.join();
+
+    return 0;
+}

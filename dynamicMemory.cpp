@@ -1,35 +1,78 @@
-// Functions
-// S.N.	Function & description
-// 1	operator new
-// It allocates storage space.
+#include <iostream>
+#include <new>   // for nothrow
+using namespace std;
 
-// 2	operator new[]
-// It allocates storage space for array.
+int main()
+{
+    // ============================================================
+    // 🔷 1. SINGLE OBJECT ALLOCATION
+    // ============================================================
+    int* p = new int;      // uninitialized
+    *p = 10;
 
-// 3	operator delete
-// It deallocates storage space.
+    cout << "Single value: " << *p << endl;
 
-// 4	operator delete[]
-// It deallocates storage space of array.
+    delete p;              // free memory
 
-// 5	get_new_handler
-// It is used to get new handler function.
 
-// Types
-// S.N.	Type & description
-// 1	nothrow_t
-// It is a nathrow type.
+    // ============================================================
+    // 🔷 2. INITIALIZED ALLOCATION
+    // ============================================================
+    int* p2 = new int(50);   // direct initialization
+    cout << "Initialized value: " << *p2 << endl;
 
-// 2	new_handler
-// It is a type of new handler function.
+    delete p2;
 
-// 3	bad_alloc
-// It is an exception and throws on failure allocating memory.
 
-// 4	bad_array_new_length
-// It is a bad array length exception.
+    // ============================================================
+    // 🔷 3. ARRAY ALLOCATION
+    // ============================================================
+    int* arr = new int[3];   // allocate array
 
-// Constants
-// S.N.	Constant & description
-// 1	nothrow
-// It is a nathrow constants.
+    for(int i = 0; i < 3; i++)
+        arr[i] = i + 1;
+
+    cout << "Array values: ";
+    for(int i = 0; i < 3; i++)
+        cout << arr[i] << " ";
+    cout << endl;
+
+    delete[] arr;   // IMPORTANT: use delete[]
+
+
+    // ============================================================
+    // 🔷 4. NOTHROW (NO EXCEPTION ON FAILURE)
+    // ============================================================
+    int* safe = new(nothrow) int[1000000000000];
+
+    if (safe == nullptr)
+        cout << "Allocation failed (no exception)\n";
+
+    delete[] safe;
+
+
+    // ============================================================
+    // 🔷 5. DYNAMIC OBJECT (CLASS)
+    // ============================================================
+    struct Demo {
+        int x;
+        Demo(int v) : x(v) {}
+        void show() { cout << "Demo: " << x << endl; }
+    };
+
+    Demo* obj = new Demo(99);   // constructor called
+    obj->show();
+
+    delete obj;   // destructor called automatically
+
+
+    // ============================================================
+    // 🔷 6. KEY NOTES
+    // ============================================================
+    // new  → allocates + constructs
+    // delete → destructs + deallocates
+    // delete[] → for arrays only
+    // mismatch → undefined behavior
+
+    return 0;
+}

@@ -1,167 +1,109 @@
-// Declaration
-// Following is the declaration for std::string.
+#include <iostream>
+#include <string>
+using namespace std;
 
-// typedef basic_string<char> string;
-// C++11
-// typedef basic_string<char> string;
-// Member types
-// member type	definition
-// value_type	char
-// traits_type	char_traits<char>
-// allocator_type	allocator<char>
-// reference	char&
-// const_reference	const char&
-// pointer	char*
-// const_pointer	const char*
-// iterator	a random access iterator to char (convertible to const_iterator)
-// const_iterator	a random access iterator to const char
-// reverse_iterator	reverse_iterator<iterator>
-// const_reverse_iterator	reverse_iterator<const_iterator>
-// difference_type	ptrdiff_t
-// size_type	size_t
-// Member functions
-// S.N.	Member function & description
-// 1	(constructor)
-// It constructs string object.
+int main()
+{
+    // ============================================================
+    // 🔷 CONSTRUCTOR / ASSIGNMENT
+    // ============================================================
+    string s1 = "Hello";
+    string s2("World");
+    string s3 = s1;     // copy
+    s3 = "New String";  // assignment
 
-// 2	(destructor)
-// It is a string destructor.
+    cout << s1 << " " << s2 << " " << s3 << endl;
 
-// 3	operator=
-// It is a string assignment.
 
-// Iterators
-// S.N.	Iterator & description
-// 1	begin
-// It returns iterator to beginning.
+    // ============================================================
+    // 🔷 ITERATORS
+    // ============================================================
+    cout << "\nForward: ";
+    for(auto it = s1.begin(); it != s1.end(); ++it)
+        cout << *it;
 
-// 2	end
-// It returns iterator to end.
+    cout << "\nReverse: ";
+    for(auto it = s1.rbegin(); it != s1.rend(); ++it)
+        cout << *it;
+    cout << endl;
 
-// 3	rbegin
-// It returns reverse iterator to reverse beginning.
 
-// 4	rend
-// It returns reverse iterator to reverse end.
+    // ============================================================
+    // 🔷 CAPACITY
+    // ============================================================
+    cout << "\nSize: " << s1.size();
+    cout << "\nLength: " << s1.length();
+    cout << "\nCapacity: " << s1.capacity();
 
-// 5	cbegin
-// It returns const_iterator to beginning.
+    s1.reserve(50);     // increase capacity
+    s1.resize(3);       // shrink string
+    cout << "\nAfter resize: " << s1;
 
-// 6	cend
-// It returns a const_iterator pointing to the past-the-end character of the string.
+    cout << "\nEmpty? " << s1.empty() << endl;
 
-// 7	crbegin
-// It returns const_reverse_iterator to reverse beginning.
+    s1.clear();         // remove all
+    cout << "After clear, empty? " << s1.empty() << endl;
 
-// 8	crend
-// It returns const_reverse_iterator to reverse end.
 
-// Capacity
-// S.N.	Capacity & description
-// 1	size
-// It returns length of string.
+    // ============================================================
+    // 🔷 ELEMENT ACCESS
+    // ============================================================
+    string s = "ABCDE";
 
-// 2	length
-// It returns length of string.
+    cout << "\n\nIndex [1]: " << s[1];
+    cout << "\nAt(2): " << s.at(2);
+    cout << "\nFront: " << s.front();
+    cout << "\nBack: " << s.back() << endl;
 
-// 3	max_size
-// It returns maximum size of string.
 
-// 4	resize
-// It resizes string.
+    // ============================================================
+    // 🔷 MODIFIERS
+    // ============================================================
+    string m = "Hello";
 
-// 5	capacity
-// It returns size of allocated storage.
+    m += " World";          // append
+    m.push_back('!');       // add char
+    m.insert(5, " C++");    // insert
+    m.erase(5, 4);          // erase
+    m.replace(0, 5, "Hi");  // replace
 
-// 6	reserve
-// It requests a change in capacity.
+    cout << "\nModified: " << m << endl;
 
-// 7	clear
-// It clears the string.
+    m.pop_back();           // remove last char
 
-// 8	empty
-// It is used to test if string is empty.
 
-// 9	shrink_to_fit
-// It is used to shrink to fit.
+    // ============================================================
+    // 🔷 STRING OPERATIONS
+    // ============================================================
+    string str = "Hello World Hello";
 
-// Capacity
-// S.N.	Element acce & description
-// 1	operator[]
-// It is used to get character of string.
+    cout << "\nFind 'World': " << str.find("World");
+    cout << "\nrfind 'Hello': " << str.rfind("Hello");
 
-// 2	at
-// It is used to get character in string.
+    cout << "\nFirst of 'o': " << str.find_first_of('o');
+    cout << "\nLast of 'o': " << str.find_last_of('o');
 
-// 3	back
-// It is used to access last character.
+    cout << "\nSubstring: " << str.substr(6, 5);
 
-// 4	front
-// It is used to access first character.
+    cout << "\nCompare: " << str.compare("Hello World Hello") << endl;
 
-// Modifiers
-// S.N.	Modifier & description
-// 1	operator+=
-// It appends to string.
 
-// 2	append
-// It appends to string.
+    // ============================================================
+    // 🔷 C-STRING ACCESS
+    // ============================================================
+    const char* cstr = str.c_str();
+    cout << "\nC-string: " << cstr << endl;
 
-// 3	push_back
-// It appends a character to string.
 
-// 4	assign
-// It is used to assign the content to string.
+    // ============================================================
+    // 🔷 COPY
+    // ============================================================
+    char buffer[10];
+    str.copy(buffer, 5, 0);   // copy first 5 chars
+    buffer[5] = '\0';
 
-// 5	insert
-// It is used to inset the value to string.
+    cout << "Copied: " << buffer << endl;
 
-// 6	erase
-// It is used to erase characters from string.
 
-// 7	replace
-// It is used to replace portion of string.
-
-// 8	swap
-// It is used to swap string values.
-
-// 9	pop_back
-// It is used to delete last character.
-
-// String operations
-// S.N.	String operation & description
-// 1	c_str
-// It is used to get C string equivalent.
-
-// 2	data
-// It is used to get string data.
-
-// 3	get_allocator
-// It is used to get an allocator.
-
-// 4	copy
-// It is used to copy sequence of characters from string.
-
-// 5	find
-// It is used to find content in string.
-
-// 6	rfind
-// It is used to find last occurrence of content in string.
-
-// 7	find_first_of
-// It is used to find character in string.
-
-// 8	find_last_of
-// It is used to find character in string from the end.
-
-// 9	find_first_not_of
-// It is used to find absence of character in string.
-
-// 10	find_last_not_of
-// It is used to find non-matching character in string from the end.
-
-// 11	substr
-// It is used to generate substring.
-
-// 12	compare
-// It is used to compare strings.
+    return 0;
+}

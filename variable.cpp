@@ -1,43 +1,16 @@
-#include <iostream>
+#include <iostream> //all preprocessor start with "#"" and does not eand with ";"
 using namespace std;
 
-//type of variable: 
-// global(application wide scope and lifetime), 
-// static(function level scope and application wide lifecycle)
-// local(block level scope and lifetime)
-
-//staorage class
-// auto
-// register
-// static
-// extern
-// mutable
-
-//modifiers for char int double
-// signed
-// unsigned
-// long
-// short
-
-//qulaifier
-// const
-// volatile
-// restrict
 
 
-// ============================================================
-// 🔷 GLOBAL VARIABLES
-// ============================================================
 
+//global variable
 int g1;        // global default initialization → 0
 int g2 = 10;   // global copy initialization
 static int g3; // global static → 0
 
-// ============================================================
-// 🔷 MACRO CONSTANT (PREPROCESSOR)
-// ============================================================
 
-#define PI 3.14 // macro constant → no type, replaced before compilation
+
 
 // ============================================================
 // 🔷 ENUMERATED CONSTANTS

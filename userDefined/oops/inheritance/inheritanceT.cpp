@@ -1,14 +1,7 @@
 #include <iostream>
 using namespace std;
-/* 
-Base \ Derived | Override (same signature) | Not Override / Different signature
-virtual        | ✔ runtime polymorphism → Derived via base ptr/ref | ⚠ hiding → Base via base ptr/ref, Derived only via derived obj
-non-virtual    | ❌ static binding → Base via base ptr/ref, Derived via derived obj | ❌ static binding → Base always via base ptr/ref, Derived separate 
-*/
 
-// ============================================================
 // 🔷 BASE CLASS
-// ============================================================
 class Base
 {
 public:
@@ -53,35 +46,7 @@ public:
     }
 };
 
-// ============================================================
-// 🔷 PROTECTED INHERITANCE
-// → public & protected become protected
-// ============================================================
 
-class DerivedProtected : protected Base
-{
-public:
-    void access()
-    {
-        cout << pub << endl; // becomes protected
-        cout << prot << endl;
-    }
-};
-
-// ============================================================
-// 🔷 PRIVATE INHERITANCE
-// → public & protected become private
-// ============================================================
-
-class DerivedPrivate : private Base
-{
-public:
-    void access()
-    {
-        cout << pub << endl; // becomes private
-        cout << prot << endl;
-    }
-};
 
 // ============================================================
 // 🔷 MULTILEVEL INHERITANCE

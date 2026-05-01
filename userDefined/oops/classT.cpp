@@ -35,34 +35,8 @@ public:                        // accessible everywhere
         int id;
     };
 
-    // ========================================================
-    // 🔷 CONSTRUCTORS
-    // ========================================================
 
-    Box() : length(0), width(0), height(0)   // default constructor
-    {
-        data = new int(0);
-        count++;
-    }
-
-    Box(int l, int w, int h) : Box()         // constructor chaining
-    {
-        length = l;
-        width = w;
-        height = h;
-        *data = l + w + h;
-    }
-
-    // copy constructor (explicit deep copy)
-    Box(const Box& other)
-    {
-        length = other.length;
-        width = other.width;
-        height = other.height;
-
-        data = new int(*other.data);    // deep copy (new memory)
-        count++;
-    }
+   
 
     // move constructor
     Box(Box&& other)

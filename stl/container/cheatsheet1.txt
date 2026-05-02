@@ -1,0 +1,80 @@
+STL Functions
+│
+├── 🔹 Insertion
+│   ├── push_back(value)
+│   │     → vector, deque, list, string
+│   │     → add at end
+│   │
+│   ├── push_front(value)
+│   │     → deque, list
+│   │     → add at beginning
+│   │
+│   └── insert(iterator, value)
+│         → vector, deque, list, set, map
+│         → insert at position
+│
+├── 🔹 Deletion
+│   ├── pop_back()
+│   │     → vector, deque, list, string
+│   │
+│   ├── pop_front()
+│   │     → deque, list
+│   │
+│   ├── erase(iterator)
+│   │     → vector, deque, list, set, map
+│   │
+│   └── erase(start, end)
+│         → vector, deque, list
+│         → range delete
+│
+├── 🔹 Access
+│   ├── operator[] (index/key)
+│   │     → vector, deque, map, unordered_map
+│   │
+│   ├── at(index/key)
+│   │     → vector, deque, map
+│   │     → safe access
+│   │
+│   ├── front()
+│   │     → vector, deque, list
+│   │
+│   └── back()
+│         → vector, deque, list
+│
+├── 🔹 Search / Lookup
+│   ├── find(value)
+│   │     → set, map, unordered_set, unordered_map
+│   │
+│   ├── count(value)
+│   │     → set, multiset, unordered_set
+│   │
+│   └── find(begin, end, value)
+│         → all containers (algorithm)
+│
+├── 🔹 Iterators
+│   ├── begin()
+│   ├── end()
+│   └── (used in all containers)
+│
+├── 🔹 Capacity
+│   ├── size()
+│   ├── empty()
+│   └── clear()
+│       → all containers
+│
+├── 🔹 Algorithms
+│   ├── sort(begin, end)
+│   │     → vector, deque, array
+│   │
+│   ├── reverse(begin, end)
+│   │     → vector, deque, list
+│   │
+│   └── binary_search(begin, end, value)
+│         → vector, deque (sorted)
+│
+└── 🔹 Concepts
+    ├── iterator → position pointer
+    ├── value → data element
+    ├── key → unique identifier (map/set)
+    ├── index → position (array-like)
+    └── [start, end) → range (end excluded)

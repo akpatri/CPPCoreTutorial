@@ -1,78 +1,4 @@
-#include <iostream>
-using namespace std;
-
-// multiple_inheritance.cpp
-// purpose:
-// understand multiple inheritance (one derived ← multiple base classes)
-
-
-// ==================================================
-// BASE CLASS 1
-// ==================================================
-class Animal
-{
-public:
-    string name;
-
-    void eat()
-    {
-        cout << name << " is eating\n";
-    }
-};
-
-
-// ==================================================
-// BASE CLASS 2
-// ==================================================
-class Pet
-{
-public:
-    void play()
-    {
-        cout << "Playing with owner\n";
-    }
-};
-
-
-// ==================================================
-// DERIVED CLASS (MULTIPLE INHERITANCE)
-// ==================================================
-// Dog inherits from BOTH Animal and Pet
-class Dog : public Animal, public Pet
-{
-public:
-    void bark()
-    {
-        cout << name << " is barking\n";
-    }
-};
-
-
-// ==================================================
-// MAIN FUNCTION
-// ==================================================
-int main()
-{
-    Dog d;
-
-    d.name = "Buddy";   // ✔ from Animal
-
-    d.eat();            // ✔ from Animal
-    d.play();           // ✔ from Pet
-    d.bark();           // ✔ from Dog
-
-    return 0;
-}
-
-
 /*
-==================== OUTPUT ====================
-Buddy is eating
-Playing with owner
-Buddy is barking
-================================================
-
-
 ==================== IMPORTANT POINTS ====================
 
 1. multiple inheritance:
@@ -110,3 +36,44 @@ Buddy is barking
 
 =========================================================
 */
+
+#include <iostream>
+using namespace std;
+
+class A
+{
+public:
+    void show() { cout << "A show\n"; }
+};
+
+class B
+{
+public:
+    void show() { cout << "B show\n"; }
+};
+
+// ============================================================
+// 🔷 AMBIGUITY PROBLEM
+// ============================================================
+
+class C : public A, public B
+{
+public:
+    void test()
+    {
+        // show();            // ❌ ambiguous → which show()?
+        A::show(); // ✔ resolved using scope resolution
+        B::show();
+    }
+};
+
+// ==================================================
+// MAIN FUNCTION
+// ==================================================
+int main()
+{
+    C c;
+    c.test();
+
+    return 0;
+}

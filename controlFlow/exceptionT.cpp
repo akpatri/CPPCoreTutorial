@@ -33,20 +33,21 @@ int main()
         // 🔷 NESTED TRY
         try
         {
+            
             throw MyException();        // throw custom exception
         }
         catch (const MyException& e)
         {
             cout << "Inner catch: " << e.what() << endl;
-            throw;                      // rethrow to outer block
+            throw "optional error message";                      // rethrow to outer block
         }
 
         // (this line will not execute after throw)
         cout << "After inner try\n";
     }
-    catch (const exception& e)          // specific/base handler
+    catch (const exception& e)          // This catches objects derived from std::exception.
     {
-        cout << "Outer catch: " << e.what() << endl;
+        cout << "Outer catch: " << e.what() << endl; //provides error information using:
     }
     catch (...)                         // catch-all (must be last)
     {

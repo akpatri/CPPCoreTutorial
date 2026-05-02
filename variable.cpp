@@ -2,30 +2,12 @@
 using namespace std;
 
 
-
-
 //global variable
 int g1;        // global default initialization → 0
 int g2 = 10;   // global copy initialization
 static int g3; // global static → 0
 
 
-
-
-// ============================================================
-// 🔷 ENUMERATED CONSTANTS
-// ============================================================
-
-enum Color
-{
-    RED,
-    GREEN,
-    BLUE
-}; // enumerated constants → RED=0, GREEN=1, BLUE=2
-
-// ============================================================
-// 🔷 FUNCTION
-// ============================================================
 
 int main()
 {
@@ -111,12 +93,7 @@ int main()
 
     int z = (x = 5, y = 10, x + y); // evaluates left→right, result = last expression (15)
 
-    // ========================================================
-    // 🔷 ENUM USAGE
-    // ========================================================
-
-    Color col = RED; // enum variable
-
+    
     // ========================================================
     // 🔷 LVALUE & RVALUE
     // ========================================================
@@ -168,15 +145,9 @@ int main()
     cout << "Constants: " << MAX1 << " " << MAX2 << endl;
 
     cout << "Literals: " << intLiteral << " " << floatLiteral << " " << charLiteral << endl;
-
     cout << "Conversions: " << d1 << " " << d2 << " " << d3 << " " << d5 << endl;
-
     cout << "Auto/Decltype: " << a1 << " " << a2 << " " << a3 << endl;
-
     cout << "Comma operator result: " << z << endl;
-
-    cout << "Enum value: " << col << endl;
-
     cout << ref << " " << rref << endl;
 
     ref = 20;          // modifies 'a'

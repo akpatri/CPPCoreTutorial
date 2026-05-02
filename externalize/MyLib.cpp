@@ -1,4 +1,4 @@
-#include "MyLib.h"
+#include "MyLib.h" // include its own header
 
 namespace MyLib
 {

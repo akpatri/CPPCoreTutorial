@@ -1,80 +1,173 @@
-STL Functions
+STL
 │
-├── 🔹 Insertion
-│   ├── push_back(value)
-│   │     → vector, deque, list, string
-│   │     → add at end
+├── 🔹 INSERT / CONSTRUCT
 │   │
-│   ├── push_front(value)
-│   │     → deque, list
-│   │     → add at beginning
-│   │
-│   └── insert(iterator, value)
-│         → vector, deque, list, set, map
-│         → insert at position
+│   ├── push_back(value) → insert at end → [vector, deque, list, string] → returns void → O(1) amortized → vector may reallocate memory
+│   ├── push_front(value) → insert at beginning → [deque, list] → returns void → O(1)
+│   ├── push(value) → adaptor insertion → [stack, queue, priority_queue] → returns void
+│   ├── emplace_back(args...) → construct at end → [vector, deque, list] → returns reference(C++17)/void(old) → avoids temporary object
+│   ├── emplace_front(args...) → construct at front → [deque, list] → returns reference(C++17)/void(old)
+│   ├── emplace(args...) → in-place construction → [all containers] → returns iterator/reference → faster for objects
+│   ├── insert(pos, value) → insert before iterator → [vector, deque, list] → returns iterator → vector/deque shift elements
+│   ├── insert(value) → key/object insertion → [set, map, unordered_*] → returns iterator or pair<iterator,bool>
+│   ├── resize(n) → change container size → [vector, deque, list, string] → returns void → new elements default initialized
+│   ├── assign(count, value) → replace contents → [vector, deque, list, string] → returns void → old contents destroyed
+│   ├── swap(container) → exchange contents → [all containers] → returns void → usually O(1)
+│   └── reserve(n) → preallocate memory → [vector, unordered_*] → returns void → reduces reallocations/rehashing
 │
-├── 🔹 Deletion
-│   ├── pop_back()
-│   │     → vector, deque, list, string
+├── 🔹 REMOVE
 │   │
-│   ├── pop_front()
-│   │     → deque, list
-│   │
-│   ├── erase(iterator)
-│   │     → vector, deque, list, set, map
-│   │
-│   └── erase(start, end)
-│         → vector, deque, list
-│         → range delete
+│   ├── pop_back() → remove last element → [vector, deque, list, string] → returns void → removed value not returned
+│   ├── pop_front() → remove first element → [deque, list] → returns void
+│   ├── pop() → adaptor removal → [stack, queue, priority_queue] → returns void
+│   ├── erase(pos) → remove at iterator → [all containers] → returns iterator to next element
+│   ├── erase(first, last) → remove range → [vector, deque, list, set, map] → returns iterator after removed range
+│   ├── clear() → remove all elements → [all containers] → returns void → capacity may remain
+│   ├── remove(value) → logical removal → [algorithm] → returns new logical end iterator → container size unchanged
+│   ├── remove_if(cond) → conditional logical removal → [algorithm] → returns new logical end iterator
+│   └── erase-remove idiom → physical deletion after remove → vec.erase(remove(...), vec.end())
 │
-├── 🔹 Access
-│   ├── operator[] (index/key)
-│   │     → vector, deque, map, unordered_map
+├── 🔹 ACCESS
 │   │
-│   ├── at(index/key)
-│   │     → vector, deque, map
-│   │     → safe access
-│   │
-│   ├── front()
-│   │     → vector, deque, list
-│   │
-│   └── back()
-│         → vector, deque, list
+│   ├── operator[](index) → direct access → [vector, deque, array, string] → returns reference → O(1) → no bounds checking
+│   ├── operator[](key) → mapped access → [map, unordered_map] → returns mapped value reference → inserts default value if absent
+│   ├── at(index) → bounds-checked access → [vector, deque, array, string] → returns reference → throws out_of_range exception
+│   ├── at(key) → safe mapped access → [map] → returns mapped value reference → throws exception if absent
+│   ├── front() → first element → [vector, deque, list, queue] → returns reference
+│   ├── back() → last element → [vector, deque, list, queue] → returns reference
+│   ├── top() → top/highest-priority element → [stack, priority_queue] → returns reference
+│   └── data() → pointer to internal array → [vector, array, string] → returns raw pointer → useful for C APIs
 │
-├── 🔹 Search / Lookup
-│   ├── find(value)
-│   │     → set, map, unordered_set, unordered_map
+├── 🔹 LOOKUP
 │   │
-│   ├── count(value)
-│   │     → set, multiset, unordered_set
+│   ├── find(key) → search key → [set, map, unordered_*] → returns iterator/end()
+│   ├── find(begin, end, value) → linear search → [all containers] → returns iterator/end() → O(n)
+│   ├── count(key) → count occurrences → [set, multiset, unordered_set, unordered_multiset] → returns count
+│   ├── contains(key) → existence check → [set, map, unordered_*] → returns bool → C++20
+│   ├── lower_bound(key) → first element >= key → [set, map, multiset, multimap] → returns iterator
+│   ├── upper_bound(key) → first element > key → [set, map, multiset, multimap] → returns iterator
+│   ├── equal_range(key) → lower + upper bound pair → [multiset, multimap] → returns pair of iterators
+│   └── binary_search(begin, end, value) → binary search → [sorted ranges] → returns bool → O(log n) → range must be sorted
+│
+├── 🔹 ITERATORS
 │   │
-│   └── find(begin, end, value)
-│         → all containers (algorithm)
+│   ├── begin(), end() → forward traversal → [all containers] → returns iterator → end() points after last element
+│   ├── rbegin(), rend() → reverse traversal → [all containers] → returns reverse iterator
+│   ├── cbegin(), cend() → constant iterators → [all containers] → read-only access
+│   ├── next(it, n) → move iterator forward → returns advanced iterator → original iterator unchanged
+│   ├── prev(it, n) → move iterator backward → returns moved iterator
+│   ├── advance(it, n) → shift iterator → returns void → modifies original iterator
+│   ├── distance(first, last) → elements between iterators → returns distance/count
+│   └── iterator invalidation → vector/deque iterators may break after insert/erase/reallocation
 │
-├── 🔹 Iterators
-│   ├── begin()
-│   ├── end()
-│   └── (used in all containers)
-│
-├── 🔹 Capacity
-│   ├── size()
-│   ├── empty()
-│   └── clear()
-│       → all containers
-│
-├── 🔹 Algorithms
-│   ├── sort(begin, end)
-│   │     → vector, deque, array
+├── 🔹 CAPACITY
 │   │
-│   ├── reverse(begin, end)
-│   │     → vector, deque, list
-│   │
-│   └── binary_search(begin, end, value)
-│         → vector, deque (sorted)
+│   ├── size() → number of elements → [all containers] → returns size_t
+│   ├── empty() → check if empty → [all containers] → returns bool
+│   ├── max_size() → theoretical maximum elements → [all containers] → returns size_t
+│   ├── capacity() → allocated storage → [vector, string] → returns size_t → may exceed size()
+│   ├── rehash(n) → change bucket count → [unordered_*] → returns void
+│   ├── load_factor() → current load factor → [unordered_*] → returns float
+│   ├── bucket_count() → total buckets → [unordered_*] → returns size_t
+│   └── shrink_to_fit() → request unused memory release → [vector, deque] → returns void → non-binding request
 │
-└── 🔹 Concepts
-    ├── iterator → position pointer
-    ├── value → data element
-    ├── key → unique identifier (map/set)
-    ├── index → position (array-like)
-    └── [start, end) → range (end excluded)
+├── 🔹 SORT / ORDER
+│   │
+│   ├── sort(begin, end) → ascending sort → [vector, deque, array] → returns void → O(n log n) → requires random access iterators
+│   ├── stable_sort(begin, end) → stable sorting → returns void → preserves equal element order
+│   ├── reverse(begin, end) → reverse sequence → returns void
+│   ├── rotate(begin, middle, end) → cyclic shift → returns iterator to new first element
+│   ├── shuffle(begin, end, gen) → random shuffle → returns void
+│   ├── partition(begin, end, cond) → partition by condition → returns partition iterator
+│   ├── is_sorted(begin, end) → check sorted order → returns bool
+│   ├── nth_element(begin, nth, end) → partial sorting → returns void → nth element placed correctly
+│   └── list.sort() → linked-list optimized sorting → [list] → returns void
+│
+├── 🔹 NUMERIC
+│   │
+│   ├── accumulate(begin, end, init) → sum/range reduction → returns accumulated value → requires <numeric>
+│   ├── partial_sum(begin, end, result) → prefix sums → returns output iterator
+│   ├── iota(begin, end, start) → fill increasing values → returns void
+│   ├── gcd(a, b) → greatest common divisor → returns value → C++17
+│   └── lcm(a, b) → least common multiple → returns value → C++17
+│
+├── 🔹 MIN / MAX
+│   │
+│   ├── min(a, b) → smaller value → returns smaller object/value
+│   ├── max(a, b) → larger value → returns larger object/value
+│   ├── min_element(begin, end) → iterator to minimum → returns iterator
+│   ├── max_element(begin, end) → iterator to maximum → returns iterator
+│   ├── minmax_element(begin, end) → min and max iterators → returns pair<iterator,iterator>
+│   └── clamp(value, low, high) → restrict value inside range → returns clamped reference/value
+│
+├── 🔹 COPY / TRANSFORM
+│   │
+│   ├── copy(begin, end, dest) → copy range → returns output iterator
+│   ├── copy_if(begin, end, dest, cond) → conditional copy → returns output iterator
+│   ├── transform(begin, end, dest, func) → apply function → returns output iterator
+│   ├── fill(begin, end, value) → fill range with value → returns void
+│   ├── generate(begin, end, func) → fill using generator → returns void
+│   ├── replace(begin, end, old, new) → replace values → returns void
+│   └── replace_if(begin, end, cond, new) → conditional replacement → returns void
+│
+├── 🔹 COMPARISON
+│   │
+│   ├── equal(begin1, end1, begin2) → compare ranges → returns bool
+│   ├── lexicographical_compare() → dictionary order comparison → returns bool
+│   └── mismatch() → first differing position → returns pair of iterators
+│
+├── 🔹 HEAP
+│   │
+│   ├── make_heap(begin, end) → create max heap → returns void
+│   ├── push_heap(begin, end) → insert into heap → returns void
+│   ├── pop_heap(begin, end) → move max element to end → returns void → actual erase still needed
+│   ├── sort_heap(begin, end) → heap sort → returns void
+│   └── is_heap(begin, end) → check heap property → returns bool
+│
+├── 🔹 ORDERED CONTAINERS
+│   │
+│   ├── set → unique sorted keys → BST based → O(log n)
+│   ├── multiset → duplicate sorted keys allowed
+│   ├── map → unique sorted key-value pairs
+│   ├── multimap → duplicate sorted keys with values
+│   ├── lower_bound() / upper_bound() → logarithmic range queries
+│   ├── map[key] → inserts default value if key absent
+│   └── ordered containers → elements always stored sorted
+│
+├── 🔹 UNORDERED CONTAINERS
+│   │
+│   ├── unordered_set → unique unordered keys → hash table → O(1) average
+│   ├── unordered_multiset → duplicate unordered keys
+│   ├── unordered_map → unordered key-value pairs
+│   ├── unordered_multimap → duplicate unordered keys with values
+│   ├── bucket(key) → bucket index of key → returns bucket number
+│   ├── bucket_size(n) → elements inside bucket → returns count
+│   ├── hash_function() → returns hash function object
+│   ├── max_load_factor() → rehash threshold → returns/modifies float value
+│   └── unordered containers → no ordering guarantee → worst case O(n)
+│
+├── 🔹 ADAPTORS
+│   │
+│   ├── stack → LIFO structure → top() gives latest element
+│   ├── queue → FIFO structure → front() oldest, back() newest
+│   ├── priority_queue → heap structure → top() highest priority
+│   ├── priority_queue<int> → max heap by default
+│   └── priority_queue<int, vector<int>, greater<int>> → min heap
+│
+└── 🔹 SPECIAL NOTES
+    │
+    ├── vector → contiguous dynamic array → cache friendly
+    ├── deque → fast insertion/removal at both ends
+    ├── list → doubly linked list → no random access
+    ├── forward_list → singly linked list → forward traversal only
+    ├── array → fixed-size static array
+    ├── string → dynamic character container
+    ├── unordered_* → hashing based containers
+    ├── sort() → requires random access iterators
+    ├── erase() in vector/deque → shifts remaining elements
+    ├── clear() → removes elements but may not free capacity
+    ├── reserve() → improves vector performance by reducing reallocations
+    ├── emplace() → avoids unnecessary copies
+    ├── remove() → only shifts elements logically
+    ├── iterators may invalidate after insert/erase
+    └── end() iterator points after last element

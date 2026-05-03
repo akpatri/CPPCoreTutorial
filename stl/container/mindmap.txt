@@ -1,0 +1,325 @@
+STL MEMORY MAP
+│
+├── MASTER IDEA
+│   │
+│   ├── ARRAY STRUCTURE
+│   │   → random access, contiguous/near-contiguous memory
+│   │
+│   ├── LINKED STRUCTURE
+│   │   → fast insertion/removal using links
+│   │
+│   ├── TREE STRUCTURE
+│   │   → sorted traversal + range queries
+│   │
+│   ├── HASH STRUCTURE
+│   │   → O(1) average lookup
+│   │
+│   └── ADAPTORS
+│       → restricted interface
+│
+├── 1. RANDOM ACCESS CAPABILITY ?
+│   │
+│   ├── SUPPORTS
+│   │   → vector, deque, array, string
+│   │
+│   ├── FUNCTIONS
+│   │   → [], at(), front(), back(), data()
+│   │
+│   ├── ALGORITHMS
+│   │   → sort(), binary_search(), lower_bound(), upper_bound(),
+│   │     nth_element(), reverse(), rotate(), shuffle()
+│   │
+│   ├── ITERATORS
+│   │   → random access iterators
+│   │
+│   └── THINK
+│       → "array-like structure"
+│
+├── 2. FRONT INSERTION CAPABILITY ?
+│   │
+│   ├── SUPPORTS
+│   │   → deque, list, forward_list
+│   │
+│   ├── FUNCTIONS
+│   │   → push_front(), pop_front(), emplace_front()
+│   │
+│   ├── THINK
+│   │   → "linked or double-ended structure"
+│   │
+│   └── NO VECTOR
+│       → shifting required
+│
+├── 3. BACK INSERTION CAPABILITY ?
+│   │
+│   ├── SUPPORTS
+│   │   → vector, deque, list, string
+│   │
+│   ├── FUNCTIONS
+│   │   → push_back(), pop_back(), emplace_back()
+│   │
+│   └── THINK
+│       → "dynamic expandable structure"
+│
+├── 4. MIDDLE INSERTION CAPABILITY ?
+│   │
+│   ├── BEST SUPPORT
+│   │   → list, forward_list
+│   │
+│   ├── FUNCTIONS
+│   │   → insert(), erase(), splice(), insert_after(),
+│   │     erase_after(), remove(), remove_if(), merge()
+│   │
+│   ├── THINK
+│   │   → "node relinking"
+│   │
+│   └── NO VECTOR/DEQUE EFFICIENCY
+│       → shifting needed
+│
+├── 5. SORTED TRAVERSAL CAPABILITY ?
+│   │
+│   ├── SUPPORTS
+│   │   → set, multiset, map, multimap
+│   │
+│   ├── FUNCTIONS
+│   │   → lower_bound(), upper_bound(), equal_range(),
+│   │     find(), contains(), count()
+│   │
+│   ├── PROPERTIES
+│   │   → automatic sorting, logarithmic operations
+│   │
+│   ├── THINK
+│   │   → "balanced BST"
+│   │
+│   └── EXTRA
+│       │
+│       ├── set
+│       │   → unique sorted keys
+│       │
+│       ├── multiset
+│       │   → duplicate sorted keys
+│       │
+│       ├── map
+│       │   → sorted key-value pairs
+│       │
+│       └── multimap
+│           → duplicate sorted key-value pairs
+│
+├── 6. HASH LOOKUP CAPABILITY ?
+│   │
+│   ├── SUPPORTS
+│   │   → unordered_set, unordered_multiset,
+│   │     unordered_map, unordered_multimap
+│   │
+│   ├── FUNCTIONS
+│   │   → bucket(), bucket_count(), bucket_size(),
+│   │     rehash(), reserve(), load_factor(),
+│   │     max_load_factor(), hash_function()
+│   │
+│   ├── LOOKUP
+│   │   → find(), count(), contains()
+│   │
+│   ├── THINK
+│   │   → "hash table"
+│   │
+│   └── NO ORDERING
+│       → no lower_bound(), upper_bound()
+│
+├── 7. MEMORY MANAGEMENT GROUP
+│   │
+│   ├── FUNCTIONS
+│   │   → size(), empty(), max_size(),
+│   │     capacity(), reserve(),
+│   │     shrink_to_fit(), rehash()
+│   │
+│   ├── VECTOR
+│   │   → reserve() prevents reallocations
+│   │
+│   ├── UNORDERED_*
+│   │   → rehash() changes bucket count
+│   │
+│   └── THINK
+│       → "memory optimization"
+│
+├── 8. ITERATOR GROUP
+│   │
+│   ├── FUNCTIONS
+│   │   → begin(), end(), rbegin(), rend(),
+│   │     cbegin(), cend(),
+│   │     next(), prev(), advance(), distance()
+│   │
+│   ├── THINK
+│   │   → "generalized pointers"
+│   │
+│   └── IMPORTANT
+│       │
+│       ├── vector/deque
+│       │   → iterators may invalidate
+│       │
+│       └── list
+│           → stable iterators
+│
+├── 9. INSERTION FAMILY
+│   │
+│   ├── FUNCTIONS
+│   │   → push_*, emplace_*, insert(), assign()
+│   │
+│   ├── THINK
+│   │   → "put something inside"
+│   │
+│   ├── push
+│   │   → insert existing object
+│   │
+│   ├── emplace
+│   │   → construct directly
+│   │
+│   └── insert
+│       → insert at specific position/key
+│
+├── 10. REMOVAL FAMILY
+│   │
+│   ├── FUNCTIONS
+│   │   → pop_*, erase(), clear(),
+│   │     remove(), remove_if()
+│   │
+│   ├── THINK
+│   │   → "delete something"
+│   │
+│   ├── remove()
+│   │   → logical removal only
+│   │
+│   └── erase()
+│       → actual physical removal
+│
+├── 11. ACCESS FAMILY
+│   │
+│   ├── FUNCTIONS
+│   │   → front(), back(), top(),
+│   │     [], at(), data()
+│   │
+│   ├── THINK
+│   │   → "give me element"
+│   │
+│   ├── []
+│   │   → fast, unsafe
+│   │
+│   ├── at()
+│   │   → safe, bounds checked
+│   │
+│   └── map[key]
+│       → creates default value if absent
+│
+├── 12. ALGORITHM FAMILY
+│   │
+│   ├── SORTING
+│   │   → sort(), stable_sort(),
+│   │     partial_sort(), nth_element()
+│   │
+│   ├── SEARCHING
+│   │   → find(), binary_search(),
+│   │     lower_bound(), upper_bound()
+│   │
+│   ├── ORDERING
+│   │   → reverse(), rotate(),
+│   │     partition(), shuffle()
+│   │
+│   ├── NUMERIC
+│   │   → accumulate(), partial_sum(),
+│   │     iota(), gcd(), lcm()
+│   │
+│   ├── COPY/TRANSFORM
+│   │   → copy(), copy_if(),
+│   │     transform(), fill(),
+│   │     generate(), replace()
+│   │
+│   └── COMPARISON
+│       → equal(), mismatch(),
+│         lexicographical_compare()
+│
+├── 13. HEAP FAMILY
+│   │
+│   ├── FUNCTIONS
+│   │   → make_heap(), push_heap(),
+│   │     pop_heap(), sort_heap(),
+│   │     is_heap()
+│   │
+│   ├── THINK
+│   │   → "priority structure"
+│   │
+│   └── USED IN
+│       → priority_queue
+│
+├── 14. ADAPTORS
+│   │
+│   ├── stack
+│   │   │
+│   │   ├── FUNCTIONS
+│   │   │   → push(), pop(), top()
+│   │   │
+│   │   └── THINK
+│   │       → LIFO
+│   │
+│   ├── queue
+│   │   │
+│   │   ├── FUNCTIONS
+│   │   │   → push(), pop(),
+│   │   │     front(), back()
+│   │   │
+│   │   └── THINK
+│   │       → FIFO
+│   │
+│   ├── priority_queue
+│   │   │
+│   │   ├── FUNCTIONS
+│   │   │   → push(), pop(), top()
+│   │   │
+│   │   ├── DEFAULT
+│   │   │   → max heap
+│   │   │
+│   │   └── THINK
+│   │       → highest priority first
+│   │
+│   └── COMMON LIMITATION
+│       → no iterators, no random access
+│
+├── 15. MEMORY BY ABSENCE
+│   │
+│   ├── vector
+│   │   → everything EXCEPT fast front insertion
+│   │
+│   ├── deque
+│   │   → vector + fast front insertion
+│   │
+│   ├── list
+│   │   → everything EXCEPT random access
+│   │
+│   ├── set/map
+│   │   → ordering WITHOUT indexing
+│   │
+│   ├── unordered_map
+│   │   → map WITHOUT ordering
+│   │
+│   ├── stack
+│   │   → only top accessible
+│   │
+│   └── queue
+│       → only front/back accessible
+│
+└── FINAL CHEAT CODE
+    │
+    ├── ARRAY
+    │   → indexing functions
+    │
+    ├── LINKED
+    │   → insertion/removal functions
+    │
+    ├── TREE
+    │   → ordering/range functions
+    │
+    ├── HASH
+    │   → bucket/hash functions
+    │
+    ├── ADAPTOR
+    │   → restricted access
+    │
+    └── GOLDEN RULE
+        → FUNCTIONS FOLLOW STRUCTURE

@@ -9,7 +9,8 @@ Memory Rule:
 4. non-virtual + different signature -> Base called via base pointer
 Virtual function:
 1. cant be static or friend
-2. class can have virtula destrucor but cant have virtual constructor
+2. class can have virtual destrucor but cant have virtual constructor
+in case of polymerphism if parent class pointer have child class object, then virtual destructor of parent is compulsory, else only parent destrucot will be called
 */
 
 #include <iostream>

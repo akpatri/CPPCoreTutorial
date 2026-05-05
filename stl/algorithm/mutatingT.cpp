@@ -1,6 +1,6 @@
-#include <iostream>     /* for input/output */
-#include <vector>       /* for vector */
-#include <algorithm>    /* for mutating algorithms */
+#include <iostream>  /* for input/output */
+#include <vector>    /* for vector */
+#include <algorithm> /* for mutating algorithms */
 using namespace std;
 
 /*
@@ -34,13 +34,12 @@ int main()
     */
     vector<int> v1(5);
 
-    fill(v1.begin(), v1.end(), 100);   // set all elements = 100
+    fill(v1.begin(), v1.end(), 100); // set all elements = 100
 
     cout << "fill(): ";
-    for(int x : v1) cout << x << " ";
+    for (int x : v1)
+        cout << x << " ";
     cout << "\n\n";
-
-
 
     // ================= fill_n() =================
     /*
@@ -48,13 +47,12 @@ int main()
     */
     vector<int> v2 = {1, 2, 3, 4, 5};
 
-    fill_n(v2.begin(), 3, 999);   // first 3 elements = 999
+    fill_n(v2.begin(), 3, 999); // first 3 elements = 999
 
     cout << "fill_n(): ";
-    for(int x : v2) cout << x << " ";
+    for (int x : v2)
+        cout << x << " ";
     cout << "\n\n";
-
-
 
     // ================= generate() =================
     /*
@@ -64,16 +62,15 @@ int main()
     int n = 1;
 
     generate(v3.begin(), v3.end(),
-    [&n]()
-    {
-        return n++;   // generate sequence
-    });
+             [&n]()
+             {
+                 return n++; // generate sequence
+             });
 
     cout << "generate(): ";
-    for(int x : v3) cout << x << " ";
+    for (int x : v3)
+        cout << x << " ";
     cout << "\n\n";
-
-
 
     // ================= generate_n() =================
     /*
@@ -83,16 +80,15 @@ int main()
     int x = 10;
 
     generate_n(v4.begin(), 5,
-    [&x]()
-    {
-        return x += 10;   // generate values
-    });
+               [&x]()
+               {
+                   return x += 10; // generate values
+               });
 
     cout << "generate_n(): ";
-    for(int y : v4) cout << y << " ";
+    for (int y : v4)
+        cout << y << " ";
     cout << "\n\n";
-
-
 
     // ================= transform() =================
     /*
@@ -103,16 +99,15 @@ int main()
     vector<int> v5 = {1, 2, 3, 4};
 
     transform(v5.begin(), v5.end(), v5.begin(),
-    [](int x)
-    {
-        return x * 2;   // modify each element
-    });
+              [](int x)
+              {
+                  return x * 2; // modify each element
+              });
 
     cout << "transform(): ";
-    for(int x : v5) cout << x << " ";
+    for (int x : v5)
+        cout << x << " ";
     cout << "\n\n";
-
-
 
     // ================= replace() =================
     /*
@@ -123,26 +118,24 @@ int main()
     replace(v6.begin(), v6.end(), 20, 200);
 
     cout << "replace(): ";
-    for(int x : v6) cout << x << " ";
+    for (int x : v6)
+        cout << x << " ";
     cout << "\n\n";
-
-
 
     // ================= replace_if() =================
     /*
         replace_if(start, end, condition, new_val)
     */
-    replace_if(v6.begin(), v6.end(),
-    [](int x)
-    {
-        return x > 100;   // condition
-    }, 999);
+    replace_if(v6.begin(), v6.end(), [](int x)
+               {
+                   return x > 100; // condition
+               },
+               999);
 
     cout << "replace_if(): ";
-    for(int x : v6) cout << x << " ";
+    for (int x : v6)
+        cout << x << " ";
     cout << "\n\n";
-
-
 
     // ================= remove() =================
     /*
@@ -155,19 +148,19 @@ int main()
     */
     vector<int> v7 = {10, 20, 30, 20, 40};
 
-    auto newEnd = remove(v7.begin(), v7.end(), 20);  // returns new logical end
+    auto newEnd = remove(v7.begin(), v7.end(), 20); // returns new logical end
 
     cout << "remove(): ";
-    for(int x : v7) cout << x << " ";
+    for (int x : v7)
+        cout << x << " ";
     cout << "\n";
 
-    v7.erase(newEnd, v7.end());   // ACTUAL deletion
+    v7.erase(newEnd, v7.end()); // ACTUAL deletion
 
     cout << "after erase(): ";
-    for(int x : v7) cout << x << " ";
+    for (int x : v7)
+        cout << x << " ";
     cout << "\n\n";
-
-
 
     // ================= remove_if() =================
     /*
@@ -176,18 +169,17 @@ int main()
     vector<int> v8 = {1, 2, 3, 4, 5, 6};
 
     auto newEnd2 = remove_if(v8.begin(), v8.end(),
-    [](int x)
-    {
-        return x % 2 == 0;   // remove even numbers
-    });
+                             [](int x)
+                             {
+                                 return x % 2 == 0; // remove even numbers
+                             });
 
-    v8.erase(newEnd2, v8.end());   // actual deletion
+    v8.erase(newEnd2, v8.end()); // actual deletion
 
     cout << "remove_if(): ";
-    for(int x : v8) cout << x << " ";
+    for (int x : v8)
+        cout << x << " ";
     cout << "\n\n";
-
-
 
     // ================= reverse() =================
     /*
@@ -198,10 +190,9 @@ int main()
     reverse(v9.begin(), v9.end());
 
     cout << "reverse(): ";
-    for(int x : v9) cout << x << " ";
+    for (int x : v9)
+        cout << x << " ";
     cout << "\n\n";
-
-
 
     // ================= rotate() =================
     /*
@@ -214,10 +205,9 @@ int main()
     rotate(v10.begin(), v10.begin() + 2, v10.end());
 
     cout << "rotate(): ";
-    for(int x : v10) cout << x << " ";
+    for (int x : v10)
+        cout << x << " ";
     cout << "\n\n";
-
-
 
     // ================= swap() =================
     /*
@@ -229,8 +219,6 @@ int main()
 
     cout << "swap(): " << a << " " << b << "\n\n";
 
-
-
     // ================= swap_ranges() =================
     /*
         swap_ranges(start1, end1, start2)
@@ -241,14 +229,14 @@ int main()
     swap_ranges(v11.begin(), v11.end(), v12.begin());
 
     cout << "swap_ranges() v11: ";
-    for(int x : v11) cout << x << " ";
+    for (int x : v11)
+        cout << x << " ";
     cout << "\n";
 
     cout << "swap_ranges() v12: ";
-    for(int x : v12) cout << x << " ";
+    for (int x : v12)
+        cout << x << " ";
     cout << "\n\n";
-
-
 
     // ================= shuffle =================
     /*
@@ -257,10 +245,39 @@ int main()
     */
     vector<int> v13 = {1, 2, 3, 4, 5};
 
-    random_shuffle(v13.begin(), v13.end());   // random order
+    random_shuffle(v13.begin(), v13.end()); // random order
 
     cout << "random_shuffle(): ";
-    for(int x : v13) cout << x << " ";
+    for (int x : v13)
+        cout << x << " ";
+
+    vector<int> v = {1, 2, 3};
+
+    // ------------------ ALL PERMUTATIONS (ASCENDING) ------------------
+
+    sort(v.begin(), v.end()); // start from smallest order
+
+    cout << "All permutations (next_permutation):\n";
+
+    do
+    {
+        for (int x : v)
+            cout << x << " ";
+        cout << "\n";
+    } while (next_permutation(v.begin(), v.end())); // generates next permutation
+
+    // ------------------ ALL PERMUTATIONS (DESCENDING) ------------------
+
+    sort(v.begin(), v.end(), greater<int>()); // start from largest order
+
+    cout << "\nAll permutations (prev_permutation):\n";
+
+    do
+    {
+        for (int x : v)
+            cout << x << " ";
+        cout << "\n";
+    } while (prev_permutation(v.begin(), v.end())); // generates previous permutation
 
     return 0;
 }

@@ -2,6 +2,9 @@
 #include <cstring> // strcat, strlen, strcpy require it
 #include <iomanip> // setw, setfill, left, right, fixed, scientific
 #include <sstream> // stringstream
+#include <algorithm>   // required for transform
+#include <cctype>      // required for toupper
+
 
 using namespace std;
 
@@ -244,8 +247,6 @@ int main()
     cout << dec << num << endl;
     // OUTPUT: 100
 
-
-
     // OUTPUT: Name : Aman, Marks : 95
 
     // 🔷 METHOD 14 : FORMAT TABLE STYLE OUTPUT
@@ -268,24 +269,23 @@ int main()
     Aman           22        95
     */
 
-     /*
-    =========================================================
-        STRING TO DIFFERENT DATA TYPES CONVERSION
-    =========================================================
-    */
+    /*
+   =========================================================
+       STRING TO DIFFERENT DATA TYPES CONVERSION
+   =========================================================
+   */
 
     // string -> int
     string strInt = "123";
     int intValue = stoi(strInt);
     cout << intValue << endl; // OUTPUT: 123
-    
 
     // string -> long
     string strLong = "999999";
     long longValue = stol(strLong);
-    cout << longValue << endl;  
+    cout << longValue << endl;
 
-   // string -> long long
+    // string -> long long
     string strLL = "123456789";
     long long llValue = stoll(strLL);
     cout << llValue << endl;
@@ -304,13 +304,11 @@ int main()
     string strBool = "1";
     bool boolValue = stoi(strBool);
     cout << boolalpha << boolValue << endl; // OUTPUT: true
-    
 
     // string -> char
     string strChar = "A";
     char charValue = strChar[0];
     cout << charValue << endl; // OUTPUT: A
-    
 
     /*
     =========================================================
@@ -322,7 +320,6 @@ int main()
     int number = 500;
     string intToStr = to_string(number);
     cout << intToStr << endl; // OUTPUT: "500"
-    
 
     // float -> string
     float marks = 95.5;
@@ -341,7 +338,7 @@ int main()
 
     // char -> string
     char grade = 'A';
-    string charToStr(1, grade); //1 number of time 'A' should appear in string
+    string charToStr(1, grade); // 1 number of time 'A' should appear in string
     cout << charToStr << endl;
 
     /*
@@ -413,6 +410,24 @@ int main()
     string normalString = arr;
 
     cout << normalString << endl;
+
+
+    // ------------------- std::transform DEMO -------------------
+
+
+    string s = "hello world";
+    string s2="";
+
+    // convert string to UPPERCASE (in-place)
+    transform(s.begin(), s.end(), s.begin(),
+              [](unsigned char c)
+              { return toupper(c); }); // apply function to each char
+
+    transform(s.begin(), s.end(),s2.begin(), ::toupper); // convert s to uppercase but it in s2
+
+    cout << "Uppercase: " << s << endl;
+
+    // ----------------------------------------------------------
 
     return 0;
 }

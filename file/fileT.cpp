@@ -75,6 +75,13 @@ ofstream with ios::out usually removes old content.
 ios::app always writes at end of file.
 Binary mode is mainly used for images, audio, video, etc.
 Always close file after use.
+
+cout conversion to boolean
+cout.good()  → no error (true)
+cout.fail()  → logical error
+cout.bad()   → serious error
+cout.eof()   → end of file (mainly for input streams)
+
 */
 #include <iostream>
 #include <fstream>

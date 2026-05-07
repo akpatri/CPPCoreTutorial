@@ -30,6 +30,14 @@ USES:
 - Callbacks
 - Dynamic function calls
 - Passing functions as arguments
+
+ARRAY TYPE: 
+declartion: int (*operations[])(int, int)
+    operations = array name
+    each element stores address of function
+Initialization: operation[i]=function_name
+call: operation[i](param1, param2);
+
 ===============================================================================
 */
 
@@ -75,6 +83,16 @@ int main()
 
     compute(10, 5, add);      // pass function as argument
     compute(10, 5, multiply); // different behavior
+
+    //array of function pointer
+    int (*operations[2])(int, int) = {
+        add,  
+    };
+    operations[1]=multiply;
+    for (int i = 0; i < 4; i++)
+    {
+        cout << operations[i](50, 10) << endl;
+    }
 
     return 0;
 }

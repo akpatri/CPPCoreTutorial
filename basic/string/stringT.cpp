@@ -136,7 +136,7 @@ int main()
         cout << "Not Found" << endl;
 
     // substr
-    cout << op.substr(6, 5) << endl; // OUTPUT: World
+    cout << op.substr(6, 5) << endl; // OUTPUT: World: upto 5 length after 6th index
 
     // compare
     cout << op.compare("Hello World Hello") << endl; // OUTPUT: 0
@@ -341,6 +341,31 @@ int main()
     string charToStr(1, grade); // 1 number of time 'A' should appear in string
     cout << charToStr << endl;
 
+    string singleChar = "";
+    singleChar += grade;
+    cout << "char(2)   : " << singleChar << endl;
+
+    int ascii = 65;
+    string asciiToStr = "";
+    asciiToStr += char(ascii);
+    cout << "ASCII     : " << asciiToStr << endl;
+    
+    // c-string -> string
+    char arr[] = "World"; //null terminated char array
+    string normalString = arr; 
+    cout << normalString << endl;
+
+    //extract part
+    char word[] = "Programming"; //may be not null-terminated
+    string partialStr(word, 7); // take first 7 characters
+    cout << "partial  : " << partialStr << endl;
+
+    char letters[] = {'H', 'e', 'l', 'l', 'o'};
+    // WRONG :string s = letters;
+    string safeString(letters, 5);
+    cout << "safe arr  : " << safeString << endl;
+
+    
     /*
     =========================================================
             STRINGSTREAM CONVERSIONS
@@ -404,12 +429,7 @@ int main()
 
     cout << cstr << endl;
 
-    // c-string -> string
-    char arr[] = "World";
 
-    string normalString = arr;
-
-    cout << normalString << endl;
 
 
     // ------------------- std::transform DEMO -------------------

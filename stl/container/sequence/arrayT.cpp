@@ -1,14 +1,10 @@
 /*
 STL array stores fixed-size elements of same data type
-
-Header file:
-#include <array>
-
-Syntax:
-array<data_type, size> array_name;
-
-Example:
-array<int, 5> arr;
+Header file: #include <array>
+Syntax: array<data_type, size> array_name;
+Example: array<int, 5> arr;
+[]: may return garbage value
+at(): throw error in case outofbound
 */
 
 #include <iostream>
@@ -18,35 +14,25 @@ using namespace std;
 int main()
 {
     // ================= CREATE =================
-
-    array<int, 5> arr = {10, 20, 30, 40, 50}; // create array with values
-
+    array<int, 5> arr = {10, 20, 30, 40, 50}; // initilizer list
+    array<int, 5> arr3 = {10, 20, 30, 40, 50}; // uniform initilization
     array<int, 5> arr2; // empty array
 
     arr2.fill(100); // fill() inserts same value in all positions
-
     cout << "arr2 elements: ";
-
     for(int x : arr2)
     {
         cout << x << " ";
     }
-
     // Output: 100 100 100 100 100
-
     cout << endl << endl;
 
-
-
     // ================= READ =================
-
     cout << "arr elements: ";
-
     for(int i = 0; i < arr.size(); i++) // size() returns total elements
     {
         cout << arr[i] << " "; // [] accesses element using index
     }
-
     // Output: 10 20 30 40 50
 
     cout << endl << endl;
@@ -74,54 +60,38 @@ int main()
 
     cout << endl;
 
-
-
     // ================= UPDATE =================
-
     arr[1] = 500; // update value using index
-
     cout << "After update: ";
-
     for(int x : arr)
     {
         cout << x << " ";
     }
-
     // Output: 10 500 30 40 50
 
     cout << endl << endl;
 
-
     // swap() exchanges data of arrays
-
     array<int, 3> a = {1, 2, 3};
-
     array<int, 3> b = {10, 20, 30};
-
     a.swap(b);
-
     cout << "Array a after swap: ";
-
     for(int x : a)
     {
         cout << x << " ";
     }
-
     // Output: 10 20 30
 
     cout << endl;
 
     cout << "Array b after swap: ";
-
     for(int x : b)
     {
         cout << x << " ";
     }
-
     // Output: 1 2 3
 
     cout << endl << endl;
-
 
 
     // ================= DELETE =================

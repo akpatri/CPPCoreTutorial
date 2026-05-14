@@ -1,14 +1,11 @@
 /*
-list stores elements in non-contiguous memory
+list stores elements in non-contiguous memory. doubly linked list, i.e. previous and next pointer
 
-Header file:
-#include <list>
+Header file: #include <list>
 
-Syntax:
-list<data_type> list_name;
+Syntax: list<data_type> list_name;
 
-Example:
-list<int> l;
+Example: list<int> l;
 
 Important points:
 1. Dynamic size
@@ -21,29 +18,38 @@ Important points:
 #include <list>
 using namespace std;
 
+// reusable display function
+void display(list<int> l)
+{
+    // range based loop to print all elements
+
+    for (int x : l)
+    {
+        cout << x << " ";
+    }
+
+    cout << endl;
+}
+
 int main()
 {
     // ================= CREATE =================
 
     list<int> l; // empty list
 
-    list<int> l2 = {10, 20, 30}; // list with values
+    list<int> l2 = {10, 20, 30}; // list with initializer list
 
     list<int> l3(5); // list of size 5 with default value 0
 
-    list<int> l4(5, 100); // list of size 5 with value 100
+    list<int> l4(5, 100); // list of size 5 with all values = 100
+
+    list<int> l5{1, 2, 3}; // uniform initialization
 
     cout << "l4 elements: ";
 
-    for(int x : l4)
-    {
-        cout << x << " ";
-    }
+    display(l4);
 
     // Output: 100 100 100 100 100
-
-    cout << endl << endl;
-
 
     // push_back() inserts element at end
 
@@ -51,181 +57,214 @@ int main()
 
     l2.push_back(50);
 
-    cout << "After push_back(): ";
+    cout << "\nAfter push_back(): ";
 
-    for(int x : l2)
-    {
-        cout << x << " ";
-    }
+    display(l2);
 
     // Output: 10 20 30 40 50
-
-    cout << endl << endl;
-
 
     // push_front() inserts element at beginning
 
     l2.push_front(5);
 
-    cout << "After push_front(): ";
+    cout << "\nAfter push_front(): ";
 
-    for(int x : l2)
-    {
-        cout << x << " ";
-    }
+    display(l2);
 
     // Output: 5 10 20 30 40 50
-
-    cout << endl << endl;
-
-
 
     // ================= READ =================
 
-    cout << "List elements: ";
+    cout << "\nList elements: ";
 
-    for(int x : l2) // range based loop
-    {
-        cout << x << " ";
-    }
+    display(l2);
 
     // Output: 5 10 20 30 40 50
 
-    cout << endl << endl;
+    // front() returns first element
 
-    cout << "l2.front(): " << l2.front() << endl; // front() returns first element
-    // Output: l2.front(): 5
+    cout << "\nl2.front(): " << l2.front() << endl;
 
-    cout << "l2.back(): " << l2.back() << endl; // back() returns last element
-    // Output: l2.back(): 50
+    // Output: 5
 
-    cout << "l2.size(): " << l2.size() << endl; // size() returns total elements
-    // Output: l2.size(): 6
+    // back() returns last element
 
-    cout << "l2.empty(): " << l2.empty() << endl; // empty() checks list is empty or not
-    // Output: l2.empty(): 0
+    cout << "l2.back(): " << l2.back() << endl;
 
-    cout << endl;
+    // Output: 50
 
+    // size() returns total number of elements
 
+    cout << "l2.size(): " << l2.size() << endl;
+
+    // Output: 6
+
+    // empty() checks list is empty or not
+    // returns 1 = true
+    // returns 0 = false
+
+    cout << "l2.empty(): " << l2.empty() << endl;
+
+    // Output: 0
+
+    // ================= ITERATOR =================
+
+    // begin() returns iterator pointing to first element
+
+    list<int>::iterator it = l2.begin();
+
+    // list supports only bidirectional iterator
+    // so:
+    // ++it  -> supported
+    // --it  -> supported
+    // it+3  -> NOT supported
+    // it-3  -> NOT supported
+
+    // advance() is used to move iterator forward/backward
+
+    advance(it, 2);
+
+    // iterator now points to 3rd element
+
+    // *it dereferences iterator
+
+    cout << "\nIterator value: " << *it << endl;
+
+    // Output: 20
 
     // ================= UPDATE =================
 
-    auto it = l2.begin(); // iterator points to first element
+    // updating value using iterator
 
-    advance(it, 2); // move iterator to 3rd position
+    *it = 500;
 
-    *it = 500; // update value using iterator
+    cout << "\nAfter update: ";
 
-    cout << "After update: ";
-
-    for(int x : l2)
-    {
-        cout << x << " ";
-    }
+    display(l2);
 
     // Output: 5 10 500 30 40 50
 
-    cout << endl << endl;
+    // insert() inserts value before iterator position
 
-
-
-    // insert() inserts value at specific position
-
-    auto it2 = l2.begin();
+    list<int>::iterator it2 = l2.begin();
 
     advance(it2, 1);
 
     l2.insert(it2, 99);
 
-    cout << "After insert(): ";
+    cout << "\nAfter insert(): ";
 
-    for(int x : l2)
-    {
-        cout << x << " ";
-    }
+    display(l2);
 
     // Output: 5 99 10 500 30 40 50
 
-    cout << endl << endl;
-
-
-
     // ================= DELETE =================
 
-    l2.pop_back(); // pop_back() removes last element
+    // pop_back() removes last element
 
-    cout << "After pop_back(): ";
+    l2.pop_back();
 
-    for(int x : l2)
-    {
-        cout << x << " ";
-    }
+    cout << "\nAfter pop_back(): ";
+
+    display(l2);
 
     // Output: 5 99 10 500 30 40
 
-    cout << endl << endl;
+    // pop_front() removes first element
 
+    l2.pop_front();
 
-    l2.pop_front(); // pop_front() removes first element
+    cout << "\nAfter pop_front(): ";
 
-    cout << "After pop_front(): ";
-
-    for(int x : l2)
-    {
-        cout << x << " ";
-    }
+    display(l2);
 
     // Output: 99 10 500 30 40
 
-    cout << endl << endl;
+    // erase() removes element using iterator
 
-
-    auto it3 = l2.begin();
+    list<int>::iterator it3 = l2.begin();
 
     advance(it3, 2);
 
-    l2.erase(it3); // erase() removes element using iterator
+    l2.erase(it3);
 
-    cout << "After erase(): ";
+    cout << "\nAfter erase(): ";
 
-    for(int x : l2)
-    {
-        cout << x << " ";
-    }
+    display(l2);
 
     // Output: 99 10 30 40
 
-    cout << endl << endl;
-
-
-
-    // remove() removes specific value
+    // remove() removes all matching values
 
     l2.remove(10);
 
-    cout << "After remove(10): ";
+    cout << "\nAfter remove(10): ";
 
-    for(int x : l2)
-    {
-        cout << x << " ";
-    }
+    display(l2);
 
     // Output: 99 30 40
 
-    cout << endl << endl;
+    // ================= EXTRA FUNCTIONS =================
 
+    // reverse() reverses list
 
+    l2.reverse();
+
+    cout << "\nAfter reverse(): ";
+
+    display(l2);
+
+    // Output: 40 30 99
+
+    // sort() sorts elements in ascending order
+
+    l2.sort();
+
+    cout << "\nAfter sort(): ";
+
+    display(l2);
+
+    // Output: 30 40 99
+
+    // unique() removes consecutive duplicate values
+
+    list<int> dup = {1, 1, 2, 2, 3, 3};
+
+    dup.unique();
+
+    cout << "\nAfter unique(): ";
+
+    display(dup);
+
+    // Output: 1 2 3
+
+    // merge() merges two sorted lists
+
+    list<int> m1 = {1, 3, 5};
+
+    list<int> m2 = {2, 4, 6};
+
+    m1.merge(m2);
+
+    cout << "\nAfter merge(): ";
+
+    display(m1);
+
+    // Output: 1 2 3 4 5 6
 
     // clear() removes all elements
 
     l2.clear();
 
-    cout << "Size after clear(): " << l2.size() << endl;
-    // Output: Size after clear(): 0
+    cout << "\nSize after clear(): " << l2.size() << endl;
+
+    // Output: 0
+
+    // empty() now returns true
 
     cout << "l2.empty(): " << l2.empty() << endl;
-    // Output: l2.empty(): 1
+
+    // Output: 1
 
     return 0;
 }

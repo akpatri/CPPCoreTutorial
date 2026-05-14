@@ -15,10 +15,9 @@ Types:
 2. Operator Overloading
 */
 
-
-class Calculator {
+class Calculator
+{
 public:
-
     /*
     ----------------------------------------
     FUNCTION / METHOD OVERLOADING
@@ -29,23 +28,25 @@ public:
     */
 
     // Method 1
-    int add(int a, int b) {
+    int add(int a, int b)
+    {
         return a + b;
     }
 
     // Method 2
     // Different parameter types
-    double add(double a, double b) {
+    double add(double a, double b)
+    {
         return a + b;
     }
 
     // Method 3
     // Different number of parameters
-    int add(int a, int b, int c) {
+    int add(int a, int b, int c)
+    {
         return a + b + c;
     }
 };
-
 
 /*
 ----------------------------------------
@@ -56,12 +57,14 @@ We are teaching C++ how '+' should work
 for custom objects.
 */
 
-class Box {
+class Box
+{
 public:
     int value;
 
     // Constructor
-    Box(int v) {
+    Box(int v)
+    {
         value = v;
     }
 
@@ -75,7 +78,8 @@ public:
         b1.operator+(b2)
     */
 
-    Box operator + (Box other) {
+    Box operator+(Box other)
+    {
 
         // Temporary object
         Box temp(0);
@@ -87,8 +91,32 @@ public:
     }
 };
 
+// Functor = Function Object
+// Class that behaves like a function
+// using operator()
+class Add
+{
+public:
+    int operator()(int a, int b)
+    {
+        return a + b;
+    }
+};
+void functorDemo()
+{
+    Add obj; // object of functor class
 
-int main() {
+    // object behaves like function
+
+    int result = obj(10, 20);
+
+    cout << "Addition: " << result << endl;
+
+    // Output: Addition: 30
+}
+
+int main()
+{
 
     cout << "===== FUNCTION OVERLOADING =====" << endl;
 
@@ -108,7 +136,6 @@ int main() {
     // Calls add(int, int, int)
     cout << c.add(1, 2, 3) << endl;
 
-
     cout << endl;
     cout << "===== OPERATOR OVERLOADING =====" << endl;
 
@@ -123,7 +150,6 @@ int main() {
     Box result = b1 + b2;
 
     cout << result.value << endl;
-
 
     return 0;
 }

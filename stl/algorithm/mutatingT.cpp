@@ -211,7 +211,7 @@ int main()
 
     // ================= swap() =================
     /*
-        swap(a, b)
+        swap(a, b) //exchange value of 2 object
     */
     int a = 10, b = 20;
 

@@ -1,19 +1,14 @@
 /*
 QUEUE IN C++
 
-Header File:
-#include <queue>
+Header File: #include <queue>
 
-Syntax:
-queue<data_type> queue_name;
+Syntax: queue<data_type> queue_name;
 
-Example:
-queue<int> q;
+Example: queue<int> q;
 
-Description:
-Queue is a linear data structure that follows:
-
-FIFO (First In First Out)
+Description: Queue is a linear data structure that follows:
+FIFO (First In First Out): added from rear, removed from front
 
 Meaning:
 - Element inserted first will be removed first.

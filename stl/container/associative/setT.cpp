@@ -1,18 +1,11 @@
 /*
 set stores unique values in sorted order
-
-Header file:
-#include <set>
-
-Syntax:
-set<data_type> set_name;
-
-Example:
-set<int> s;
-
+Header file:#include <set>
+Syntax: set<data_type> set_name;
+Example: set<int> s;
 Important points:
 1. Stores only unique values
-2. Values stored in sorted order
+2. Values are readonly and stored in sorted order
 3. Duplicate values are ignored
 4. Internally uses Red Black Tree
 5. No indexing
@@ -22,169 +15,238 @@ Important points:
 #include <set>
 using namespace std;
 
+// reusable display function
+
+void display(set<int> s)
+{
+    for (int x : s)
+    {
+        cout << x << " ";
+    }
+
+    cout << endl;
+}
+
 int main()
 {
     // ================= CREATE =================
 
     set<int> s; // empty set
 
-    s.insert(30); // insert() adds value
+    // set stores only unique values
+
+    // duplicate values are ignored
+
+    // set automatically stores values in ascending order
+
+    // insert() adds value
+
+    s.insert(30);
 
     s.insert(10);
 
     s.insert(20);
 
-    s.insert(10); // duplicate value ignored
+    s.insert(10); // duplicate ignored
 
-    cout << "set elements: ";
+    cout << "Set elements: ";
 
-    for(int x : s)
-    {
-        cout << x << " ";
-    }
+    display(s);
 
     /*
     Output:
     10 20 30
     */
 
-    cout << endl << endl;
+    // uniform initialization
 
+    set<int> s2{5, 1, 3, 2, 5};
+
+    cout << "\nUniform initialized set: ";
+
+    display(s2);
+
+    /*
+    Output:
+    1 2 3 5
+    */
 
     // insert() inserts new value
 
     s.insert(50);
 
-    cout << "After insert(): ";
+    cout << "\nAfter insert(): ";
 
-    for(int x : s)
-    {
-        cout << x << " ";
-    }
+    display(s);
 
     /*
     Output:
     10 20 30 50
     */
 
-    cout << endl << endl;
-
-
-
     // ================= READ =================
 
-    cout << "s.size(): " << s.size() << endl; // size() returns total unique elements
-    // Output: s.size(): 4
+    // size() returns total unique elements
 
-    cout << "s.empty(): " << s.empty() << endl; // empty() checks set is empty or not
-    // Output: s.empty(): 0
+    cout << "\ns.size(): " << s.size() << endl;
 
-    cout << endl;
+    // Output: 4
 
+    // empty() checks set is empty or not
+
+    // returns:
+    // 1 = true
+    // 0 = false
+
+    cout << "s.empty(): " << s.empty() << endl;
+
+    // Output: 0
 
     // find() searches value
 
-    if(s.find(20) != s.end())
+    // returns iterator if found
+    // returns s.end() if not found
+
+    if (s.find(20) != s.end())
     {
         cout << "20 found" << endl;
     }
 
     // Output: 20 found
 
-    cout << endl;
-
-
     // count() checks value exists or not
 
+    // returns:
+    // 1 = exists
+    // 0 = does not exist
+
     cout << "count(10): " << s.count(10) << endl;
-    // Output: count(10): 1
+
+    // Output: 1
 
     cout << "count(100): " << s.count(100) << endl;
-    // Output: count(100): 0
 
-    cout << endl;
+    // Output: 0
 
-
-    // begin() returns iterator of first element
+    // begin() returns iterator to first element
 
     cout << "First element: " << *s.begin() << endl;
-    // Output: First element: 10
 
-    cout << endl;
+    // Output: 10
 
+    // ================= ITERATOR =================
 
+    // set supports bidirectional iterator
+
+    // ++it -> supported
+    // --it -> supported
+
+    // it+2 -> NOT supported
+    // it-2 -> NOT supported
+
+    set<int>::iterator it = s.begin();
+
+    cout << "\nIterator value: " << *it << endl;
+
+    // Output: 10
+
+    ++it;
+
+    cout << "Next value: " << *it << endl;
+
+    // Output: 20
 
     // ================= UPDATE =================
 
-    // set values cannot be updated directly
+    // set values cannot be modified directly
 
-    // erase old value and insert new value
+    // because modifying value may break sorted order
+
+    // so:
+    // erase old value
+    // insert new value
 
     s.erase(20);
 
     s.insert(200);
 
-    cout << "After update:" << endl;
+    cout << "\nAfter update:" << endl;
 
-    for(int x : s)
-    {
-        cout << x << " ";
-    }
+    display(s);
 
     /*
     Output:
     10 30 50 200
     */
 
-    cout << endl << endl;
-
-
-
     // ================= DELETE =================
 
-    s.erase(30); // erase() removes value
+    // erase(value) removes value
 
-    cout << "After erase(30): ";
+    s.erase(30);
 
-    for(int x : s)
-    {
-        cout << x << " ";
-    }
+    cout << "\nAfter erase(30): ";
+
+    display(s);
 
     /*
     Output:
     10 50 200
     */
 
-    cout << endl << endl;
+    // erase(iterator) removes single element
 
+    set<int>::iterator it2 = s.find(50);
 
-    auto it = s.find(50);
-
-    if(it != s.end())
+    if (it2 != s.end())
     {
-        s.erase(it); // erase(iterator) removes single element
+        s.erase(it2);
     }
 
-    cout << "After erase(iterator): ";
+    cout << "\nAfter erase(iterator): ";
 
-    for(int x : s)
-    {
-        cout << x << " ";
-    }
+    display(s);
 
     /*
     Output:
     10 200
     */
 
-    cout << endl << endl;
+    // clear() removes all elements
 
+    s.clear();
 
-    s.clear(); // clear() removes all elements
+    cout << "\nAfter clear()" << endl;
 
     cout << "s.empty(): " << s.empty() << endl;
-    // Output: s.empty(): 1
+
+    // Output: 1
+
+    // ================= COMPARATOR =================
+
+    // greater<int> sorts elements in descending order
+
+    set<int, greater<int>> ds;
+
+    ds.insert(10);
+
+    ds.insert(40);
+
+    ds.insert(20);
+
+    ds.insert(30);
+
+    cout << "\nDescending order set: ";
+
+    for (int x : ds)
+    {
+        cout << x << " ";
+    }
+
+    /*
+    Output:
+    40 30 20 10
+    */
 
     return 0;
 }

@@ -1,15 +1,8 @@
 /*
 multiset stores values in sorted order
-
-Header file:
-#include <set>
-
-Syntax:
-multiset<data_type> set_name;
-
-Example:
-multiset<int> ms;
-
+Header file: #include <set>
+Syntax: multiset<data_type> set_name;
+Example: multiset<int> ms;
 Important points:
 1. Duplicate values are allowed
 2. Values stored in sorted order

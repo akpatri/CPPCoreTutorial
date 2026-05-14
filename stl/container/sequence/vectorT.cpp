@@ -1,14 +1,8 @@
 /*
 vector stores dynamic-size elements of same data type
-
-Header file:
-#include <vector>
-
-Syntax:
-vector<data_type> vector_name;
-
-Example:
-vector<int> v;
+Header file: #include <vector>
+Syntax: vector<data_type> vector_name;
+Example: vector<int> v;
 */
 
 #include <iostream>
@@ -19,13 +13,11 @@ int main()
 {
     // ================= CREATE =================
 
-    vector<int> v; // empty vector
-
-    vector<int> v2 = {10, 20, 30}; // vector with values
-
-    vector<int> v3(5); // vector of size 5 with default value 0
-
-    vector<int> v4(5, 100); // vector of size 5 with value 100
+    vector<int> v;                 // empty vector
+    vector<int> v2 = {10, 20, 30}; // vector with initilizer list
+    vector<int> v3(5);             // vector of size 5 with default value 0
+    vector<int> v4(5, 100);        // vector of size 5 with value 100
+    vector<int> v5{1, 2, 3, 4, 5}; // uniform initilization
 
     cout << "v4 elements: ";
 
@@ -58,16 +50,12 @@ int main()
          << endl;
 
     // insert() inserts element at specific position
-
     v2.insert(v2.begin() + 1, 99);
-
     cout << "After insert(): ";
-
     for (int x : v2)
     {
         cout << x << " ";
     }
-
     // Output: 10 99 20 30 40 50
 
     cout << endl
@@ -75,10 +63,10 @@ int main()
 
     // ================= READ =================
 
-    cout << "v2[0]: " << v2[0] << endl; // [] accesses element using index
+    cout << "v2[0]: " << v2[0] << endl; // [] accesses element using index, no outofbound exception
     // Output: v2[0]: 10
 
-    cout << "v2.at(2): " << v2.at(2) << endl; // at() safely accesses element
+    cout << "v2.at(2): " << v2.at(2) << endl; // at() safely accesses element, throw outofbound exception
     // Output: v2.at(2): 20
 
     cout << "v2.front(): " << v2.front() << endl; // front() returns first element
@@ -95,7 +83,14 @@ int main()
 
     cout << "v2.empty(): " << v2.empty() << endl; // empty() checks vector is empty or not
     // Output: v2.empty(): 0
-
+    
+    vector<int>::iterator it = v2.begin(); // iterator declaration
+    // using while loop
+    while (it != v2.end())
+    {
+        cout << *it << " ";
+        ++it;
+    } //last valid element is at v2.end()-1
     cout << endl;
 
     // ================= UPDATE =================
@@ -117,63 +112,45 @@ int main()
     // ================= DELETE =================
 
     v2.pop_back(); // pop_back() removes last element
-
     cout << "After pop_back(): ";
-
     for (int x : v2)
     {
         cout << x << " ";
     }
-
     // Output: 10 500 20 30 40
-
     cout << endl
          << endl;
 
     // erase() removes element from specific position
-
     v2.erase(v2.begin() + 2);
-
     cout << "After erase(): ";
-
     for (int x : v2)
     {
         cout << x << " ";
     }
-
     // Output: 10 500 30 40
-
     cout << endl
          << endl;
 
     // clear() removes all elements
-
     v2.clear();
-
     cout << "Size after clear(): " << v2.size() << endl;
     // Output: Size after clear(): 0
 
     cout << "v2.empty(): " << v2.empty() << endl;
     // Output: v2.empty(): 1
-
     cout << endl;
 
     // ================= 2D VECTOR =================
-
-    vector<vector<int>> matrix =
-        {
-            {1, 2, 3},
-            {4, 5, 6}};
+    vector<vector<int>> matrix = {{1, 2, 3}, {4, 5, 6}};
 
     cout << "2D vector:" << endl;
-
     for (int i = 0; i < matrix.size(); i++)
     {
         for (int j = 0; j < matrix[i].size(); j++)
         {
             cout << matrix[i][j] << " ";
         }
-
         cout << endl;
     }
 

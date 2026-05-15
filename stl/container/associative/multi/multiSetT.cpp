@@ -1,205 +1,337 @@
 /*
-multiset stores values in sorted order
-Header file: #include <set>
-Syntax: multiset<data_type> set_name;
-Example: multiset<int> ms;
-Important points:
+========================================================
+                  MULTISET IN C++
+========================================================
+
+Definition:
+- multiset stores values in sorted order
+- Duplicate values are allowed
+- Elements are automatically sorted
+
+Header File:
+    #include <set>
+
+Syntax:
+    multiset<data_type> set_name;
+
+Example:
+    multiset<int> ms;
+
+Internal Working:
+- Internally implemented using Red Black Tree
+- Uses bidirectional iterator
+
+Important Points:
 1. Duplicate values are allowed
 2. Values stored in sorted order
-3. Internally uses Red Black Tree
-4. No indexing
+3. No direct indexing
+4. Values cannot be modified directly
+5. Only one value stored (no key-value pair)
+
+Main Functions:
+1. insert()        -> insert value
+2. size()          -> total elements
+3. empty()         -> checks multiset empty or not
+4. count(value)    -> total occurrences
+5. find(value)     -> search value
+6. equal_range()   -> access duplicate values
+7. erase(value)    -> delete all occurrences
+8. erase(iterator) -> delete single occurrence
+9. clear()         -> remove all elements
+
+Iterator Support:
+- ++it -> supported
+- --it -> supported
+- it+2 -> NOT supported
+- it-2 -> NOT supported
+
+Time Complexity:
+- insert()  -> O(log n)
+- find()    -> O(log n)
+- erase()   -> O(log n)
+- count()   -> O(log n + duplicates)
+
+Example:
+    10 10 20 20 30 40
+
+========================================================
 */
 
 #include <iostream>
 #include <set>
 using namespace std;
 
-int main()
+// ================= DISPLAY FUNCTION =================
+
+void display(multiset<int> ms)
 {
-    // ================= CREATE =================
+    for (int x : ms)
+    {
+        cout << x << " ";
+    }
+
+    cout << endl;
+}
+
+// ================= CREATE FUNCTION =================
+
+void createDemo()
+{
+    cout << "================ CREATE =================\n"
+         << endl;
 
     multiset<int> ms; // empty multiset
 
-    ms.insert(30); // insert() adds value
-
+    ms.insert(30);
     ms.insert(10);
-
     ms.insert(20);
-
     ms.insert(10); // duplicate allowed
 
     cout << "multiset elements: ";
 
-    for(int x : ms)
-    {
-        cout << x << " ";
-    }
+    display(ms);
 
     /*
     Output:
     10 10 20 30
     */
 
-    cout << endl << endl;
-
-
-    // insert() inserts more values
+    // insert more values
 
     ms.insert(40);
-
     ms.insert(20);
 
-    cout << "After insert(): ";
+    cout << "\nAfter insert(): ";
 
-    for(int x : ms)
-    {
-        cout << x << " ";
-    }
+    display(ms);
 
     /*
     Output:
     10 10 20 20 30 40
     */
 
-    cout << endl << endl;
+    cout << endl;
+}
 
+// ================= READ FUNCTION =================
 
+void readDemo()
+{
+    cout << "================ READ =================\n"
+         << endl;
 
-    // ================= READ =================
+    multiset<int> ms{
+        30,
+        10,
+        20,
+        10,
+        40,
+        20};
 
-    cout << "ms.size(): " << ms.size() << endl; // size() returns total elements
-    // Output: ms.size(): 6
+    // size()
 
-    cout << "ms.empty(): " << ms.empty() << endl; // empty() checks multiset is empty or not
-    // Output: ms.empty(): 0
+    cout << "ms.size(): " << ms.size() << endl;
+
+    // empty()
+
+    cout << "ms.empty(): " << ms.empty() << endl;
 
     cout << endl;
 
-
-    // count() returns total occurrences
+    // count()
 
     cout << "count(10): " << ms.count(10) << endl;
-    // Output: count(10): 2
 
     cout << "count(20): " << ms.count(20) << endl;
-    // Output: count(20): 2
 
     cout << endl;
 
+    // find()
 
-    // find() searches value
-
-    if(ms.find(30) != ms.end())
+    if (ms.find(30) != ms.end())
     {
         cout << "30 found" << endl;
     }
 
-    // Output: 30 found
-
     cout << endl;
 
-
-    // begin() returns iterator of first element
+    // begin()
 
     cout << "First element: " << *ms.begin() << endl;
-    // Output: First element: 10
 
     cout << endl;
 
-
-    // equal_range() accesses duplicate values
+    // equal_range()
 
     auto range = ms.equal_range(20);
 
     cout << "Values of 20: ";
 
-    for(auto it = range.first; it != range.second; it++)
+    for (auto it = range.first; it != range.second; it++)
     {
         cout << *it << " ";
     }
 
-    // Output: 20 20
+    /*
+    Output:
+    20 20
+    */
 
-    cout << endl << endl;
+    cout << endl
+         << endl;
+}
 
+// ================= ITERATOR FUNCTION =================
 
+void iteratorDemo()
+{
+    cout << "================ ITERATOR =================\n"
+         << endl;
 
-    // ================= UPDATE =================
+    multiset<int> ms{
+        10,
+        20,
+        30,
+        40};
+
+    auto it = ms.begin();
+
+    cout << "First element: " << *it << endl;
+
+    ++it;
+
+    cout << "Second element: " << *it << endl;
+
+    /*
+    ++it -> supported
+    --it -> supported
+
+    it+2 -> NOT supported
+    it-2 -> NOT supported
+    */
+
+    cout << endl;
+}
+
+// ================= UPDATE FUNCTION =================
+
+void updateDemo()
+{
+    cout << "================ UPDATE =================\n"
+         << endl;
+
+    multiset<int> ms{
+        10,
+        10,
+        20,
+        20,
+        30,
+        40};
 
     // multiset values cannot be updated directly
 
     // erase old value and insert new value
 
-    auto it2 = ms.find(30);
+    auto it = ms.find(30);
 
-    if(it2 != ms.end())
+    if (it != ms.end())
     {
-        ms.erase(it2); // remove single occurrence
+        ms.erase(it); // remove single occurrence
     }
 
     ms.insert(300);
 
     cout << "After update:" << endl;
 
-    for(int x : ms)
-    {
-        cout << x << " ";
-    }
+    display(ms);
 
     /*
     Output:
     10 10 20 20 40 300
     */
 
-    cout << endl << endl;
+    cout << endl;
+}
 
+// ================= DELETE FUNCTION =================
 
+void deleteDemo()
+{
+    cout << "================ DELETE =================\n"
+         << endl;
 
-    // ================= DELETE =================
+    multiset<int> ms{
+        10,
+        10,
+        20,
+        20,
+        40,
+        300};
 
-    ms.erase(10); // erase(value) removes all occurrences of 10
+    // erase(value)
+
+    ms.erase(10);
 
     cout << "After erase(10): ";
 
-    for(int x : ms)
-    {
-        cout << x << " ";
-    }
+    display(ms);
 
     /*
     Output:
     20 20 40 300
     */
 
-    cout << endl << endl;
+    cout << endl;
 
+    // erase(iterator)
 
-    auto it3 = ms.find(20);
+    auto it = ms.find(20);
 
-    if(it3 != ms.end())
+    if (it != ms.end())
     {
-        ms.erase(it3); // erase(iterator) removes single occurrence
+        ms.erase(it); // removes single occurrence
     }
 
     cout << "After erase(iterator): ";
 
-    for(int x : ms)
-    {
-        cout << x << " ";
-    }
+    display(ms);
 
     /*
     Output:
     20 40 300
     */
 
-    cout << endl << endl;
+    cout << endl;
 
+    // clear()
 
-    ms.clear(); // clear() removes all elements
+    ms.clear();
+
+    cout << "After clear()" << endl;
 
     cout << "ms.empty(): " << ms.empty() << endl;
-    // Output: ms.empty(): 1
+
+    /*
+    Output:
+    ms.empty(): 1
+    */
+
+    cout << endl;
+}
+
+// ================= MAIN FUNCTION =================
+
+int main()
+{
+    createDemo();
+
+    readDemo();
+
+    iteratorDemo();
+
+    updateDemo();
+
+    deleteDemo();
 
     return 0;
 }

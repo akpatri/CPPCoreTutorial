@@ -1,47 +1,108 @@
 /*
-unordered_multimap stores data in key-value pair
+========================================================
+            UNORDERED_MULTIMAP IN C++
+========================================================
 
-Header file:
-#include <unordered_map>
+Definition:
+- unordered_multimap stores data in key-value pair
+- Duplicate keys are allowed
+- Uses hashing for fast searching
+- Elements are NOT stored in sorted order
+
+Header File:
+    #include <unordered_map>
 
 Syntax:
-unordered_multimap<key_data_type, value_data_type> map_name;
+    unordered_multimap<key_data_type, value_data_type> map_name;
 
 Example:
-unordered_multimap<int, string> umm;
+    unordered_multimap<int, string> umm;
 
-Important points:
-1. Stores data using key-value pair
+Internal Working:
+- Internally implemented using Hash Table
+- Uses hashing technique
+
+Important Points:
+1. Stores data in key-value pair
 2. Duplicate keys are allowed
 3. Unordered storage
-4. Faster searching using hashing
-5. No indexing
+4. Faster searching compared to multimap
+5. No indexing by position
+6. [] operator NOT supported
+7. first = key
+8. second = value
+
+Main Functions:
+1. insert()        -> insert key-value pair
+2. size()          -> total key-value pairs
+3. empty()         -> checks container empty or not
+4. count()         -> returns duplicate key count
+5. find()          -> search key
+6. equal_range()  -> access all duplicate keys
+7. erase(key)      -> delete all matching keys
+8. erase(iterator) -> delete single element
+9. clear()         -> remove all elements
+
+Iterator Support:
+- Forward iterator supported
+- ++it -> supported
+- --it -> NOT supported
+
+Time Complexity:
+(Average Case)
+- insert() -> O(1)
+- find()   -> O(1)
+- erase()  -> O(1)
+
+(Worst Case)
+- O(n)
+
+Example Output:
+    3 -> David
+    1 -> Sam
+    2 -> John
+    1 -> Ali
+
+Order is NOT fixed
+
+========================================================
 */
 
 #include <iostream>
 #include <unordered_map>
 using namespace std;
 
-int main()
+// ================= DISPLAY FUNCTION =================
+
+void display(unordered_multimap<int, string> umm)
 {
-    // ================= CREATE =================
+    unordered_multimap<int, string>::iterator it;
 
-    unordered_multimap<int, string> umm; // empty unordered_multimap
+    for (it = umm.begin(); it != umm.end(); ++it)
+    {
+        cout << it->first << " -> " << it->second << endl;
+    }
+}
 
-    umm.insert({1, "Ali"}); // insert key-value pair
+// ================= CREATE FUNCTION =================
 
+void createDemo()
+{
+    cout << "================ CREATE =================\n"
+         << endl;
+
+    unordered_multimap<int, string> umm;
+
+    // insert key-value pairs
+
+    umm.insert({1, "Ali"});
     umm.insert({2, "John"});
-
     umm.insert({1, "Sam"}); // duplicate key allowed
-
     umm.insert({3, "David"});
 
     cout << "unordered_multimap elements:" << endl;
 
-    for(auto x : umm)
-    {
-        cout << x.first << " -> " << x.second << endl;
-    }
+    display(umm);
 
     /*
     Output can be:
@@ -49,86 +110,144 @@ int main()
     1 -> Sam
     2 -> John
     1 -> Ali
-
-    Order is not fixed
     */
 
     cout << endl;
+}
 
+// ================= READ FUNCTION =================
 
+void readDemo()
+{
+    cout << "================ READ =================\n"
+         << endl;
 
-    // ================= READ =================
+    unordered_multimap<int, string> umm;
 
-    cout << "umm.size(): " << umm.size() << endl; // size() returns total pairs
-    // Output: umm.size(): 4
+    umm.insert({1, "Ali"});
+    umm.insert({2, "John"});
+    umm.insert({1, "Sam"});
+    umm.insert({3, "David"});
 
-    cout << "umm.empty(): " << umm.empty() << endl; // empty() checks map is empty or not
-    // Output: umm.empty(): 0
+    // size()
+
+    cout << "umm.size(): " << umm.size() << endl;
+
+    // empty()
+
+    cout << "umm.empty(): " << umm.empty() << endl;
 
     cout << endl;
 
-
-    // count() returns number of duplicate keys
+    // count()
 
     cout << "count(1): " << umm.count(1) << endl;
-    // Output: count(1): 2
 
     cout << "count(2): " << umm.count(2) << endl;
-    // Output: count(2): 1
 
     cout << endl;
 
+    // find()
 
-    // find() returns iterator to first matching key
+    unordered_multimap<int, string>::iterator it;
 
-    auto it = umm.find(1);
+    it = umm.find(1);
 
-    if(it != umm.end())
+    if (it != umm.end())
     {
         cout << "Found key 1 -> " << it->second << endl;
     }
 
-    // Output can be: Found key 1 -> Ali
-
     cout << endl;
 
+    // equal_range()
 
-    // equal_range() accesses all duplicate keys
-
-    auto range = umm.equal_range(1);
+    pair<
+        unordered_multimap<int, string>::iterator,
+        unordered_multimap<int, string>::iterator>
+        range = umm.equal_range(1);
 
     cout << "Values of key 1: ";
 
-    for(auto i = range.first; i != range.second; i++)
+    unordered_multimap<int, string>::iterator i;
+
+    for (i = range.first; i != range.second; ++i)
     {
         cout << i->second << " ";
     }
 
-    // Output can be: Ali Sam
+    /*
+    Output can be:
+    Ali Sam
+    */
 
-    cout << endl << endl;
+    cout << endl
+         << endl;
+}
 
+// ================= ITERATOR FUNCTION =================
 
+void iteratorDemo()
+{
+    cout << "================ ITERATOR =================\n"
+         << endl;
 
-    // ================= UPDATE =================
+    unordered_multimap<int, string> umm;
 
-    // unordered_multimap does not support [] operator
+    umm.insert({1, "Ali"});
+    umm.insert({2, "John"});
+    umm.insert({3, "Sam"});
 
-    // update using iterator
+    unordered_multimap<int, string>::iterator it;
 
-    auto it2 = umm.find(2);
+    it = umm.begin();
 
-    if(it2 != umm.end())
+    cout << "First element:" << endl;
+
+    cout << it->first << " -> " << it->second << endl;
+
+    ++it;
+
+    cout << "\nSecond element:" << endl;
+
+    cout << it->first << " -> " << it->second << endl;
+
+    /*
+    ++it -> supported
+    --it -> NOT supported
+    */
+
+    cout << endl;
+}
+
+// ================= UPDATE FUNCTION =================
+
+void updateDemo()
+{
+    cout << "================ UPDATE =================\n"
+         << endl;
+
+    unordered_multimap<int, string> umm;
+
+    umm.insert({1, "Ali"});
+    umm.insert({2, "John"});
+    umm.insert({1, "Sam"});
+    umm.insert({3, "David"});
+
+    // update value using iterator
+
+    unordered_multimap<int, string>::iterator it;
+
+    it = umm.find(2);
+
+    if (it != umm.end())
     {
-        it2->second = "Peter";
+        it->second = "Peter";
     }
 
     cout << "After update:" << endl;
 
-    for(auto x : umm)
-    {
-        cout << x.first << " -> " << x.second << endl;
-    }
+    display(umm);
 
     /*
     Output can be:
@@ -139,19 +258,29 @@ int main()
     */
 
     cout << endl;
+}
 
+// ================= DELETE FUNCTION =================
 
+void deleteDemo()
+{
+    cout << "================ DELETE =================\n"
+         << endl;
 
-    // ================= DELETE =================
+    unordered_multimap<int, string> umm;
 
-    umm.erase(3); // erase() removes all pairs with key 3
+    umm.insert({1, "Ali"});
+    umm.insert({2, "Peter"});
+    umm.insert({1, "Sam"});
+    umm.insert({3, "David"});
+
+    // erase(key)
+
+    umm.erase(3);
 
     cout << "After erase(3):" << endl;
 
-    for(auto x : umm)
-    {
-        cout << x.first << " -> " << x.second << endl;
-    }
+    display(umm);
 
     /*
     Output can be:
@@ -162,20 +291,20 @@ int main()
 
     cout << endl;
 
+    // erase(iterator)
 
-    auto it3 = umm.find(1);
+    unordered_multimap<int, string>::iterator it;
 
-    if(it3 != umm.end())
+    it = umm.find(1);
+
+    if (it != umm.end())
     {
-        umm.erase(it3); // erase(iterator) removes single element
+        umm.erase(it);
     }
 
     cout << "After erase(iterator):" << endl;
 
-    for(auto x : umm)
-    {
-        cout << x.first << " -> " << x.second << endl;
-    }
+    display(umm);
 
     /*
     Output can be:
@@ -185,11 +314,35 @@ int main()
 
     cout << endl;
 
+    // clear()
 
-    umm.clear(); // clear() removes all elements
+    umm.clear();
+
+    cout << "After clear()" << endl;
 
     cout << "umm.empty(): " << umm.empty() << endl;
-    // Output: umm.empty(): 1
+
+    /*
+    Output:
+    umm.empty(): 1
+    */
+
+    cout << endl;
+}
+
+// ================= MAIN FUNCTION =================
+
+int main()
+{
+    createDemo();
+
+    readDemo();
+
+    iteratorDemo();
+
+    updateDemo();
+
+    deleteDemo();
 
     return 0;
 }

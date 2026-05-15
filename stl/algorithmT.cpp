@@ -1,3 +1,104 @@
+/*
+========================================================
+            STL ALGORITHMS IN C++
+========================================================
+
+Definition:
+- STL algorithms are ready-made functions provided by C++
+- Used for searching, sorting, modifying, counting,
+  partitioning, numeric operations, etc.
+
+Header Files:
+    #include <algorithm>
+    #include <numeric>
+    #include <ranges>   // C++20
+
+Important Points:
+1. Works using iterators
+2. Reduces manual coding
+3. Optimized and reusable
+4. Most algorithms work on ranges:
+       [begin, end)
+5. end() points after last element
+
+========================================================
+                    MAIN CATEGORIES
+========================================================
+
+1. Non-Modifying Algorithms
+   - count()
+   - find()
+   - all_of()
+   - any_of()
+   - none_of()
+
+2. Modifying Algorithms
+   - copy()
+   - move()
+   - swap()
+   - transform()
+   - replace()
+   - remove()
+
+3. Sorting Algorithms
+   - sort()
+   - binary_search()
+   - merge()
+
+4. Partitioning Algorithms
+   - partition()
+
+5. Min / Max Algorithms
+   - min_element()
+   - max_element()
+
+6. Numeric Algorithms
+   - accumulate()
+
+7. Permutation Algorithms
+   - next_permutation()
+
+========================================================
+                ITERATOR REQUIREMENTS
+========================================================
+
+sort()              -> Random access iterator
+binary_search()     -> Sorted range required
+merge()             -> Both ranges must be sorted
+partition()         -> Forward iterator
+
+========================================================
+                TIME COMPLEXITY
+========================================================
+
+count()             -> O(n)
+find()              -> O(n)
+sort()              -> O(n log n)
+binary_search()     -> O(log n)
+replace()           -> O(n)
+remove()            -> O(n)
+accumulate()        -> O(n)
+min_element()       -> O(n)
+max_element()       -> O(n)
+
+========================================================
+                IMPORTANT NOTES
+========================================================
+
+1. remove() does NOT reduce container size
+   Use erase() after remove()
+
+2. binary_search() works only on sorted data
+
+3. move() transfers resources instead of copying
+
+4. transform() modifies data using function/lambda
+
+5. partition() does NOT maintain order
+
+========================================================
+*/
+
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -5,27 +106,28 @@
 #include <ranges> // C++20
 using namespace std;
 
-// reusable display function
+// ================= DISPLAY FUNCTION =================
 
 void display(vector<int> v)
 {
-    for (int x : v)
+    vector<int>::iterator it;
+
+    for (it = v.begin(); it != v.end(); ++it)
     {
-        cout << x << " ";
+        cout << *it << " ";
     }
 
     cout << endl;
 }
 
-int main()
+// ================= NON-MODIFYING OPERATIONS =================
+
+void nonModifyingDemo()
 {
-    // ================= CREATE =================
+    cout << "================ NON-MODIFYING =================\n"
+         << endl;
 
     vector<int> v = {5, 2, 8, 2, 3, 7, 2};
-
-    // uniform initialization
-
-    vector<int> nums{10, 20, 30};
 
     cout << "Original vector: ";
 
@@ -36,33 +138,34 @@ int main()
     5 2 8 2 3 7 2
     */
 
-    // ============================================================
-    // 🔷 NON-MODIFYING OPERATIONS
-    // ============================================================
-
-    // count() counts total occurrences
+    // count()
 
     cout << "\nCount of 2: ";
 
     cout << count(v.begin(), v.end(), 2) << endl;
 
-    // Output: 3
+    /*
+    Output:
+    3
+    */
 
-    // find() searches value
+    // find()
 
-    // returns iterator if found
-    // returns v.end() if not found
+    vector<int>::iterator it;
 
-    vector<int>::iterator it = find(v.begin(), v.end(), 8);
+    it = find(v.begin(), v.end(), 8);
 
     if (it != v.end())
     {
         cout << "Found 8" << endl;
     }
 
-    // Output: Found 8
+    /*
+    Output:
+    Found 8
+    */
 
-    // all_of() checks condition for all elements
+    // all_of()
 
     cout << "All > 0: ";
 
@@ -75,9 +178,12 @@ int main()
                 })
          << endl;
 
-    // Output: 1
+    /*
+    Output:
+    1
+    */
 
-    // any_of() checks condition for at least one element
+    // any_of()
 
     cout << "Any > 5: ";
 
@@ -90,9 +196,12 @@ int main()
                 })
          << endl;
 
-    // Output: 1
+    /*
+    Output:
+    1
+    */
 
-    // none_of() checks no element satisfies condition
+    // none_of()
 
     cout << "None < 0: ";
 
@@ -105,19 +214,30 @@ int main()
                 })
          << endl;
 
-    // Output: 1
+    /*
+    Output:
+    1
+    */
 
-    // ============================================================
-    // 🔷 MODIFYING OPERATIONS
-    // ============================================================
+    cout << endl;
+}
 
-    // copy() copies elements
+// ================= MODIFYING OPERATIONS =================
+
+void modifyingDemo()
+{
+    cout << "================ MODIFYING =================\n"
+         << endl;
+
+    vector<int> v = {5, 2, 8, 2, 3, 7, 2};
+
+    // copy()
 
     vector<int> v2(v.size());
 
-    copy(v.begin(), v.end(), v2.begin()); //first, last, where
+    copy(v.begin(), v.end(), v2.begin());
 
-    cout << "\nAfter copy(): ";
+    cout << "After copy(): ";
 
     display(v2);
 
@@ -126,13 +246,15 @@ int main()
     5 2 8 2 3 7 2
     */
 
-    // move() moves elements
+    cout << endl;
+
+    // move()
 
     vector<int> v3(v.size());
 
-    move(v.begin(), v.end(), v3.begin()); //first, last , where_to_store
+    move(v.begin(), v.end(), v3.begin());
 
-    cout << "\nAfter move(): ";
+    cout << "After move(): ";
 
     display(v3);
 
@@ -141,7 +263,9 @@ int main()
     5 2 8 2 3 7 2
     */
 
-    // swap() swaps two containers
+    cout << endl;
+
+    // swap()
 
     vector<int> a = {1, 2, 3};
 
@@ -149,7 +273,7 @@ int main()
 
     swap(a, b);
 
-    cout << "\nAfter swap()" << endl;
+    cout << "After swap()" << endl;
 
     cout << "a: ";
 
@@ -165,7 +289,9 @@ int main()
     b: 1 2 3
     */
 
-    // transform() modifies elements
+    cout << endl;
+
+    // transform()
 
     transform(
         v3.begin(),
@@ -176,7 +302,7 @@ int main()
             return x * x;
         });
 
-    cout << "\nAfter transform():" << endl;
+    cout << "After transform(): ";
 
     display(v3);
 
@@ -185,11 +311,13 @@ int main()
     25 4 64 4 9 49 4
     */
 
-    // replace() replaces old value with new value
+    cout << endl;
 
-    replace(v3.begin(), v3.end(), 4, 100); //between this range, replace all 4 with 100
+    // replace()
 
-    cout << "\nAfter replace():" << endl;
+    replace(v3.begin(), v3.end(), 4, 100);
+
+    cout << "After replace(): ";
 
     display(v3);
 
@@ -198,16 +326,17 @@ int main()
     25 100 64 100 9 49 100
     */
 
-    // remove() performs logical remove
+    cout << endl;
 
-    // does NOT reduce vector size automatically
+    // remove()
 
-    vector<int>::iterator newEnd =
-        remove(v3.begin(), v3.end(), 100); //remove all occurance of specific element from range
+    vector<int>::iterator newEnd;
+
+    newEnd = remove(v3.begin(), v3.end(), 100);
 
     v3.erase(newEnd, v3.end());
 
-    cout << "\nAfter remove():" << endl;
+    cout << "After remove(): ";
 
     display(v3);
 
@@ -216,54 +345,68 @@ int main()
     25 64 9 49
     */
 
-    // ============================================================
-    // 🔷 SORTING OPERATIONS
-    // ============================================================
+    cout << endl;
+}
 
-    // sort() sorts in ascending order
+// ================= SORTING OPERATIONS =================
 
-    sort(v3.begin(), v3.end());
+void sortingDemo()
+{
+    cout << "================ SORTING =================\n"
+         << endl;
 
-    cout << "\nAfter sort():" << endl;
+    vector<int> v = {25, 64, 9, 49};
 
-    display(v3);
+    // sort()
+
+    sort(v.begin(), v.end());
+
+    cout << "Ascending sort(): ";
+
+    display(v);
 
     /*
     Output:
     9 25 49 64
     */
 
-    // descending sort using comparator
+    cout << endl;
 
-    sort(
-        v3.begin(),
-        v3.end(),
-        greater<int>());
+    // descending sort
 
-    cout << "\nDescending sort():" << endl;
+    sort(v.begin(), v.end(), greater<int>());
 
-    display(v3);
+    cout << "Descending sort(): ";
+
+    display(v);
 
     /*
     Output:
     64 49 25 9
     */
 
-    // binary_search() requires sorted container
+    cout << endl;
 
-    sort(v3.begin(), v3.end());
+    // binary_search()
 
-    cout << "\nBinary search 49: ";
+    sort(v.begin(), v.end());
+
+    cout << "Binary search 49: ";
 
     cout << binary_search(
-                v3.begin(),
-                v3.end(),
+                v.begin(),
+                v.end(),
                 49)
          << endl;
 
-    // Output: 1
+    /*
+    Output:
+    1
+    */
 
-    // merge() merges two sorted ranges
+    cout << endl;
+
+    // merge()
 
     vector<int> m1 = {1, 3, 5};
 
@@ -278,7 +421,7 @@ int main()
         m2.end(),
         result.begin());
 
-    cout << "\nAfter merge():" << endl;
+    cout << "After merge(): ";
 
     display(result);
 
@@ -287,11 +430,17 @@ int main()
     1 2 3 4 5 6
     */
 
-    // ============================================================
-    // 🔷 PARTITIONING
-    // ============================================================
+    cout << endl;
+}
 
-    // partition() places matching condition first
+// ================= PARTITIONING =================
+
+void partitionDemo()
+{
+    cout << "================ PARTITION =================\n"
+         << endl;
+
+    vector<int> result = {1, 2, 3, 4, 5, 6};
 
     partition(
         result.begin(),
@@ -301,7 +450,7 @@ int main()
             return x % 2 == 0;
         });
 
-    cout << "\nAfter partition():" << endl;
+    cout << "After partition(): ";
 
     display(result);
 
@@ -310,22 +459,33 @@ int main()
     6 2 4 3 5 1
     */
 
-    // ============================================================
-    // 🔷 MIN / MAX
-    // ============================================================
+    cout << endl;
+}
 
-    // min_element() returns iterator to minimum element
+// ================= MIN / MAX =================
 
-    cout << "\nMin: ";
+void minMaxDemo()
+{
+    cout << "================ MIN / MAX =================\n"
+         << endl;
+
+    vector<int> result = {6, 2, 4, 3, 5, 1};
+
+    // min_element()
+
+    cout << "Min: ";
 
     cout << *min_element(
                 result.begin(),
                 result.end())
          << endl;
 
-    // Output: 1
+    /*
+    Output:
+    1
+    */
 
-    // max_element() returns iterator to maximum element
+    // max_element()
 
     cout << "Max: ";
 
@@ -334,15 +494,26 @@ int main()
                 result.end())
          << endl;
 
-    // Output: 6
+    /*
+    Output:
+    6
+    */
 
-    // ============================================================
-    // 🔷 NUMERIC OPERATIONS
-    // ============================================================
+    cout << endl;
+}
 
-    // accumulate() returns sum
+// ================= NUMERIC OPERATIONS =================
 
-    cout << "\nSum: ";
+void numericDemo()
+{
+    cout << "================ NUMERIC =================\n"
+         << endl;
+
+    vector<int> result = {1, 2, 3, 4, 5, 6};
+
+    // accumulate()
+
+    cout << "Sum: ";
 
     cout << accumulate(
                 result.begin(),
@@ -350,19 +521,26 @@ int main()
                 0)
          << endl;
 
-    // Output: 21
+    /*
+    Output:
+    21
+    */
 
-    // ============================================================
-    // 🔷 PERMUTATION
-    // ============================================================
+    cout << endl;
+}
 
-    // next_permutation() creates next lexicographical order
+// ================= PERMUTATION =================
+
+void permutationDemo()
+{
+    cout << "================ PERMUTATION =================\n"
+         << endl;
 
     vector<int> p = {1, 2, 3};
 
     next_permutation(p.begin(), p.end());
 
-    cout << "\nAfter next_permutation():" << endl;
+    cout << "After next_permutation(): ";
 
     display(p);
 
@@ -371,56 +549,63 @@ int main()
     1 3 2
     */
 
-    // ============================================================
-    // 🔷 ITERATOR NOTES
-    // ============================================================
+    cout << endl;
+}
 
-    // vector supports random access iterator
+// ================= ITERATOR NOTES =================
 
-    // ++it -> supported
-    // --it -> supported
-
-    // it+2 -> supported
-    // it-2 -> supported
-
-    // unlike list/set/map
-
-    // ============================================================
-    // 🔷 RANGES (C++20)
-    // ============================================================
+void iteratorDemo()
+{
+    cout << "================ ITERATOR NOTES =================\n"
+         << endl;
 
     /*
-    vector<int> r = {5, 4, 3, 2, 1};
+    Vector supports random access iterator
 
-
-
-    // std::ranges::sort()
-
-    std::ranges::sort(r);
-
-
-
-    // std::ranges::find()
-
-    auto rit = std::ranges::find(r, 3);
-
-    if (rit != r.end())
-    {
-        cout << "Found 3 using ranges" << endl;
-    }
-
-
-
-    // std::ranges::for_each()
-
-    std::ranges::for_each(
-        r,
-        [](int x)
-        {
-            cout << x << " ";
-        }
-    );
+    ++it -> supported
+    --it -> supported
+    it+2 -> supported
+    it-2 -> supported
     */
+
+    vector<int> v = {10, 20, 30, 40};
+
+    vector<int>::iterator it;
+
+    it = v.begin();
+
+    cout << "First value: " << *it << endl;
+
+    ++it;
+
+    cout << "Second value: " << *it << endl;
+
+    it = it + 2;
+
+    cout << "Fourth value: " << *it << endl;
+
+    cout << endl;
+}
+
+// ================= MAIN FUNCTION =================
+
+int main()
+{
+    nonModifyingDemo();
+
+    modifyingDemo();
+
+    sortingDemo();
+
+    partitionDemo();
+
+    minMaxDemo();
+
+    numericDemo();
+
+    permutationDemo();
+
+    iteratorDemo();
 
     return 0;
 }

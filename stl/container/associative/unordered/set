@@ -1,118 +1,215 @@
 /*
-unordered_set stores unique values
+========================================================
+                UNORDERED_SET IN C++
+========================================================
 
-Header file:
-#include <unordered_set>
+Definition:
+- unordered_set stores unique values
+- Uses hashing for fast searching
+- Elements are NOT stored in sorted order
+
+Header File:
+    #include <unordered_set>
 
 Syntax:
-unordered_set<data_type> set_name;
+    unordered_set<data_type> set_name;
 
 Example:
-unordered_set<int> us;
+    unordered_set<int> us;
 
-Important points:
+Internal Working:
+- Internally implemented using Hash Table
+- Uses hashing technique
+
+Important Points:
 1. Stores only unique values
 2. Unordered storage
-3. Faster searching using hashing
+3. Faster searching compared to set
 4. Duplicate values are ignored
 5. No indexing
+6. Values cannot be modified directly
+7. Order is NOT fixed
+
+Main Functions:
+1. insert()     -> insert value
+2. size()       -> total unique elements
+3. empty()      -> checks container empty or not
+4. find()       -> search value
+5. count()      -> checks value exists or not
+6. erase()      -> remove value
+7. clear()      -> remove all elements
+
+Iterator Support:
+- Forward iterator supported
+- ++it -> supported
+- --it -> NOT supported
+
+Time Complexity:
+(Average Case)
+- insert() -> O(1)
+- find()   -> O(1)
+- erase()  -> O(1)
+
+(Worst Case)
+- O(n)
+
+Example Output:
+    30 20 10
+
+Order is NOT fixed
+
+========================================================
 */
 
 #include <iostream>
 #include <unordered_set>
 using namespace std;
 
-int main()
+// ================= DISPLAY FUNCTION =================
+
+void display(unordered_set<int> us)
 {
-    // ================= CREATE =================
+    unordered_set<int>::iterator it;
+
+    for (it = us.begin(); it != us.end(); ++it)
+    {
+        cout << *it << " ";
+    }
+
+    cout << endl;
+}
+
+// ================= CREATE FUNCTION =================
+
+void createDemo()
+{
+    cout << "================ CREATE =================\n"
+         << endl;
 
     unordered_set<int> us; // empty unordered_set
 
-    us.insert(10); // insert() adds value
-
+    us.insert(10);
     us.insert(20);
-
     us.insert(30);
-
-    us.insert(10); // duplicate value ignored
+    us.insert(10); // duplicate ignored
 
     cout << "unordered_set elements: ";
 
-    for(int x : us)
-    {
-        cout << x << " ";
-    }
+    display(us);
 
     /*
     Output can be:
     30 20 10
-
-    Order is not fixed
     */
 
-    cout << endl << endl;
+    cout << endl;
 
-
-    // insert() inserts new value
+    // insert new value
 
     us.insert(50);
 
     cout << "After insert(): ";
 
-    for(int x : us)
-    {
-        cout << x << " ";
-    }
+    display(us);
 
     /*
     Output can be:
     50 30 20 10
     */
 
-    cout << endl << endl;
+    cout << endl;
+}
 
+// ================= READ FUNCTION =================
 
+void readDemo()
+{
+    cout << "================ READ =================\n"
+         << endl;
 
-    // ================= READ =================
+    unordered_set<int> us;
 
-    cout << "us.size(): " << us.size() << endl; // size() returns total unique elements
-    // Output: us.size(): 4
+    us.insert(10);
+    us.insert(20);
+    us.insert(30);
+    us.insert(50);
 
-    cout << "us.empty(): " << us.empty() << endl; // empty() checks set is empty or not
-    // Output: us.empty(): 0
+    // size()
+
+    cout << "us.size(): " << us.size() << endl;
+
+    // empty()
+
+    cout << "us.empty(): " << us.empty() << endl;
 
     cout << endl;
 
+    // find()
 
-    // find() searches value
-
-    if(us.find(20) != us.end())
+    if (us.find(20) != us.end())
     {
         cout << "20 found" << endl;
     }
 
-    // Output: 20 found
-
     cout << endl;
 
-
-    // count() checks value exists or not
+    // count()
 
     cout << "count(10): " << us.count(10) << endl;
-    // Output: count(10): 1
 
     cout << "count(100): " << us.count(100) << endl;
-    // Output: count(100): 0
 
     cout << endl;
+}
 
+// ================= ITERATOR FUNCTION =================
 
+void iteratorDemo()
+{
+    cout << "================ ITERATOR =================\n"
+         << endl;
 
-    // ================= UPDATE =================
+    unordered_set<int> us;
+
+    us.insert(10);
+    us.insert(20);
+    us.insert(30);
+
+    unordered_set<int>::iterator it;
+
+    it = us.begin();
+
+    cout << "First element: " << *it << endl;
+
+    ++it;
+
+    cout << "Second element: " << *it << endl;
+
+    /*
+    ++it -> supported
+    --it -> NOT supported
+    */
+
+    cout << endl;
+}
+
+// ================= UPDATE FUNCTION =================
+
+void updateDemo()
+{
+    cout << "================ UPDATE =================\n"
+         << endl;
+
+    unordered_set<int> us;
+
+    us.insert(10);
+    us.insert(20);
+    us.insert(30);
+    us.insert(50);
 
     // unordered_set values cannot be updated directly
 
-    // remove old value and insert new value
+    // erase old value and insert new value
 
     us.erase(20);
 
@@ -120,43 +217,74 @@ int main()
 
     cout << "After update:" << endl;
 
-    for(int x : us)
-    {
-        cout << x << " ";
-    }
+    display(us);
 
     /*
     Output can be:
     200 50 30 10
     */
 
-    cout << endl << endl;
+    cout << endl;
+}
 
+// ================= DELETE FUNCTION =================
 
+void deleteDemo()
+{
+    cout << "================ DELETE =================\n"
+         << endl;
 
-    // ================= DELETE =================
+    unordered_set<int> us;
 
-    us.erase(30); // erase() removes value
+    us.insert(10);
+    us.insert(30);
+    us.insert(50);
+    us.insert(200);
+
+    // erase()
+
+    us.erase(30);
 
     cout << "After erase(30): ";
 
-    for(int x : us)
-    {
-        cout << x << " ";
-    }
+    display(us);
 
     /*
     Output can be:
     200 50 10
     */
 
-    cout << endl << endl;
+    cout << endl;
 
+    // clear()
 
-    us.clear(); // clear() removes all elements
+    us.clear();
+
+    cout << "After clear()" << endl;
 
     cout << "us.empty(): " << us.empty() << endl;
-    // Output: us.empty(): 1
+
+    /*
+    Output:
+    us.empty(): 1
+    */
+
+    cout << endl;
+}
+
+// ================= MAIN FUNCTION =================
+
+int main()
+{
+    createDemo();
+
+    readDemo();
+
+    iteratorDemo();
+
+    updateDemo();
+
+    deleteDemo();
 
     return 0;
 }

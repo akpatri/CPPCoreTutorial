@@ -1,52 +1,99 @@
 /*
-set stores unique values in sorted order
-Header file:#include <set>
-Syntax: set<data_type> set_name;
-Example: set<int> s;
-Important points:
+========================================================
+                     SET IN C++
+========================================================
+
+Definition:
+- set stores unique values in sorted order
+- Duplicate values are automatically ignored
+- Elements are automatically sorted
+
+Header File:
+    #include <set>
+
+Syntax:
+    set<data_type> set_name;
+
+Example:
+    set<int> s;
+
+Internal Working:
+- Internally implemented using Red Black Tree
+- Uses bidirectional iterator
+
+Important Points:
 1. Stores only unique values
-2. Values are readonly and stored in sorted order
+2. Values are readonly
 3. Duplicate values are ignored
-4. Internally uses Red Black Tree
+4. Elements stored in ascending order by default
 5. No indexing
+6. Values cannot be modified directly
+7. Sorted automatically
+
+Main Functions:
+1. insert()        -> insert value
+2. size()          -> total unique elements
+3. empty()         -> checks container empty or not
+4. find()          -> search value
+5. count()         -> checks value exists or not
+6. erase(value)    -> remove value
+7. erase(iterator) -> remove single element
+8. clear()         -> remove all elements
+9. begin()         -> iterator to first element
+
+Iterator Support:
+- ++it -> supported
+- --it -> supported
+- it+2 -> NOT supported
+- it-2 -> NOT supported
+
+Comparator:
+- greater<int> -> descending order sorting
+
+Time Complexity:
+- insert() -> O(log n)
+- find()   -> O(log n)
+- erase()  -> O(log n)
+- count()  -> O(log n)
+
+Example:
+    10 20 30
+
+========================================================
 */
 
 #include <iostream>
 #include <set>
 using namespace std;
 
-// reusable display function
+// ================= DISPLAY FUNCTION =================
 
 void display(set<int> s)
 {
-    for (int x : s)
+    set<int>::iterator it;
+
+    for (it = s.begin(); it != s.end(); ++it)
     {
-        cout << x << " ";
+        cout << *it << " ";
     }
 
     cout << endl;
 }
 
-int main()
+// ================= CREATE FUNCTION =================
+
+void createDemo()
 {
-    // ================= CREATE =================
+    cout << "================ CREATE =================\n"
+         << endl;
 
     set<int> s; // empty set
 
-    // set stores only unique values
-
-    // duplicate values are ignored
-
-    // set automatically stores values in ascending order
-
-    // insert() adds value
+    // insert values
 
     s.insert(30);
-
     s.insert(10);
-
     s.insert(20);
-
     s.insert(10); // duplicate ignored
 
     cout << "Set elements: ";
@@ -58,11 +105,13 @@ int main()
     10 20 30
     */
 
+    cout << endl;
+
     // uniform initialization
 
     set<int> s2{5, 1, 3, 2, 5};
 
-    cout << "\nUniform initialized set: ";
+    cout << "Uniform initialized set: ";
 
     display(s2);
 
@@ -71,11 +120,13 @@ int main()
     1 2 3 5
     */
 
-    // insert() inserts new value
+    cout << endl;
+
+    // insert new value
 
     s.insert(50);
 
-    cout << "\nAfter insert(): ";
+    cout << "After insert(): ";
 
     display(s);
 
@@ -84,93 +135,115 @@ int main()
     10 20 30 50
     */
 
-    // ================= READ =================
+    cout << endl
+         << endl;
+}
 
-    // size() returns total unique elements
+// ================= READ FUNCTION =================
 
-    cout << "\ns.size(): " << s.size() << endl;
+void readDemo()
+{
+    cout << "================ READ =================\n"
+         << endl;
 
-    // Output: 4
+    set<int> s;
 
-    // empty() checks set is empty or not
+    s.insert(10);
+    s.insert(20);
+    s.insert(30);
+    s.insert(50);
 
-    // returns:
-    // 1 = true
-    // 0 = false
+    // size()
+
+    cout << "s.size(): " << s.size() << endl;
+
+    // empty()
 
     cout << "s.empty(): " << s.empty() << endl;
 
-    // Output: 0
+    cout << endl;
 
-    // find() searches value
-
-    // returns iterator if found
-    // returns s.end() if not found
+    // find()
 
     if (s.find(20) != s.end())
     {
         cout << "20 found" << endl;
     }
 
-    // Output: 20 found
+    cout << endl;
 
-    // count() checks value exists or not
-
-    // returns:
-    // 1 = exists
-    // 0 = does not exist
+    // count()
 
     cout << "count(10): " << s.count(10) << endl;
 
-    // Output: 1
-
     cout << "count(100): " << s.count(100) << endl;
 
-    // Output: 0
+    cout << endl;
 
-    // begin() returns iterator to first element
+    // begin()
 
     cout << "First element: " << *s.begin() << endl;
 
-    // Output: 10
+    cout << endl;
+}
 
-    // ================= ITERATOR =================
+// ================= ITERATOR FUNCTION =================
 
-    // set supports bidirectional iterator
+void iteratorDemo()
+{
+    cout << "================ ITERATOR =================\n"
+         << endl;
 
-    // ++it -> supported
-    // --it -> supported
+    set<int> s;
 
-    // it+2 -> NOT supported
-    // it-2 -> NOT supported
+    s.insert(10);
+    s.insert(20);
+    s.insert(30);
 
-    set<int>::iterator it = s.begin();
+    set<int>::iterator it;
 
-    cout << "\nIterator value: " << *it << endl;
+    it = s.begin();
 
-    // Output: 10
+    cout << "Iterator value: " << *it << endl;
 
     ++it;
 
     cout << "Next value: " << *it << endl;
 
-    // Output: 20
+    /*
+    ++it -> supported
+    --it -> supported
 
-    // ================= UPDATE =================
+    it+2 -> NOT supported
+    it-2 -> NOT supported
+    */
+
+    cout << endl;
+}
+
+// ================= UPDATE FUNCTION =================
+
+void updateDemo()
+{
+    cout << "================ UPDATE =================\n"
+         << endl;
+
+    set<int> s;
+
+    s.insert(10);
+    s.insert(20);
+    s.insert(30);
+    s.insert(50);
 
     // set values cannot be modified directly
 
-    // because modifying value may break sorted order
-
-    // so:
-    // erase old value
-    // insert new value
+    // erase old value and insert new value
 
     s.erase(20);
 
     s.insert(200);
 
-    cout << "\nAfter update:" << endl;
+    cout << "After update:" << endl;
 
     display(s);
 
@@ -179,13 +252,28 @@ int main()
     10 30 50 200
     */
 
-    // ================= DELETE =================
+    cout << endl;
+}
 
-    // erase(value) removes value
+// ================= DELETE FUNCTION =================
+
+void deleteDemo()
+{
+    cout << "================ DELETE =================\n"
+         << endl;
+
+    set<int> s;
+
+    s.insert(10);
+    s.insert(30);
+    s.insert(50);
+    s.insert(200);
+
+    // erase(value)
 
     s.erase(30);
 
-    cout << "\nAfter erase(30): ";
+    cout << "After erase(30): ";
 
     display(s);
 
@@ -194,16 +282,20 @@ int main()
     10 50 200
     */
 
-    // erase(iterator) removes single element
+    cout << endl;
 
-    set<int>::iterator it2 = s.find(50);
+    // erase(iterator)
 
-    if (it2 != s.end())
+    set<int>::iterator it;
+
+    it = s.find(50);
+
+    if (it != s.end())
     {
-        s.erase(it2);
+        s.erase(it);
     }
 
-    cout << "\nAfter erase(iterator): ";
+    cout << "After erase(iterator): ";
 
     display(s);
 
@@ -212,41 +304,73 @@ int main()
     10 200
     */
 
-    // clear() removes all elements
+    cout << endl;
+
+    // clear()
 
     s.clear();
 
-    cout << "\nAfter clear()" << endl;
+    cout << "After clear()" << endl;
 
     cout << "s.empty(): " << s.empty() << endl;
 
-    // Output: 1
+    /*
+    Output:
+    s.empty(): 1
+    */
 
-    // ================= COMPARATOR =================
+    cout << endl;
+}
 
-    // greater<int> sorts elements in descending order
+// ================= COMPARATOR FUNCTION =================
+
+void comparatorDemo()
+{
+    cout << "================ COMPARATOR =================\n"
+         << endl;
+
+    // greater<int> sorts in descending order
 
     set<int, greater<int>> ds;
 
     ds.insert(10);
-
     ds.insert(40);
-
     ds.insert(20);
-
     ds.insert(30);
 
-    cout << "\nDescending order set: ";
+    cout << "Descending order set: ";
 
-    for (int x : ds)
+    set<int, greater<int>>::iterator it;
+
+    for (it = ds.begin(); it != ds.end(); ++it)
     {
-        cout << x << " ";
+        cout << *it << " ";
     }
 
     /*
     Output:
     40 30 20 10
     */
+
+    cout << endl
+         << endl;
+}
+
+// ================= MAIN FUNCTION =================
+
+int main()
+{
+    createDemo();
+
+    readDemo();
+
+    iteratorDemo();
+
+    updateDemo();
+
+    deleteDemo();
+
+    comparatorDemo();
 
     return 0;
 }

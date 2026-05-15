@@ -1,147 +1,349 @@
 /*
-STL array stores fixed-size elements of same data type
-Header file: #include <array>
-Syntax: array<data_type, size> array_name;
-Example: array<int, 5> arr;
-[]: may return garbage value
-at(): throw error in case outofbound
+========================================================
+                  STL ARRAY IN C++
+========================================================
+
+Definition:
+- STL array stores fixed-size elements of same data type
+- Size cannot change after creation
+
+Header File:
+    #include <array>
+
+Syntax:
+    array<data_type, size> array_name;
+
+Example:
+    array<int, 5> arr;
+
+Internal Working:
+- Stored in contiguous memory locations
+- Fixed-size container
+
+Important Points:
+1. Stores same data type elements
+2. Size is fixed at compile time
+3. Faster access using index
+4. Supports iterators
+5. [] does NOT check bounds
+6. at() safely checks bounds
+7. front() returns first element
+8. back() returns last element
+9. data() returns address of first element
+
+Difference:
+- []   -> may return garbage value for invalid index
+- at() -> throws out_of_range exception
+
+Main Functions:
+1. fill()   -> fill entire array with same value
+2. at()     -> safe element access
+3. front()  -> first element
+4. back()   -> last element
+5. size()   -> total elements
+6. empty()  -> checks array empty or not
+7. data()   -> address of first element
+8. swap()   -> swap two arrays
+
+Iterator Support:
+- Random access iterator supported
+- ++it   -> supported
+- --it   -> supported
+- it+2   -> supported
+- it-2   -> supported
+
+Time Complexity:
+- Access      -> O(1)
+- Update      -> O(1)
+- Traversal   -> O(n)
+- swap()      -> O(n)
+
+2D Array Syntax:
+    array<array<int, col>, row> matrix;
+
+Example:
+    array<array<int, 3>, 2> matrix;
+
+========================================================
 */
 
 #include <iostream>
 #include <array>
 using namespace std;
 
-int main()
+// ================= DISPLAY FUNCTION =================
+
+void display(array<int, 5> arr)
 {
-    // ================= CREATE =================
-    array<int, 5> arr = {10, 20, 30, 40, 50}; // initilizer list
-    array<int, 5> arr3 = {10, 20, 30, 40, 50}; // uniform initilization
-    array<int, 5> arr2; // empty array
+    array<int, 5>::iterator it;
 
-    arr2.fill(100); // fill() inserts same value in all positions
+    for (it = arr.begin(); it != arr.end(); ++it)
+    {
+        cout << *it << " ";
+    }
+
+    cout << endl;
+}
+
+// ================= CREATE FUNCTION =================
+
+void createDemo()
+{
+    cout << "================ CREATE =================\n"
+         << endl;
+
+    // initializer list
+
+    array<int, 5> arr = {10, 20, 30, 40, 50};
+
+    // uniform initialization
+
+    array<int, 5> arr3{10, 20, 30, 40, 50};
+
+    // empty array
+
+    array<int, 5> arr2;
+
+    // fill()
+
+    arr2.fill(100);
+
     cout << "arr2 elements: ";
-    for(int x : arr2)
-    {
-        cout << x << " ";
-    }
-    // Output: 100 100 100 100 100
-    cout << endl << endl;
 
-    // ================= READ =================
+    display(arr2);
+
+    /*
+    Output:
+    100 100 100 100 100
+    */
+
+    cout << endl;
+}
+
+// ================= READ FUNCTION =================
+
+void readDemo()
+{
+    cout << "================ READ =================\n"
+         << endl;
+
+    array<int, 5> arr = {10, 20, 30, 40, 50};
+
     cout << "arr elements: ";
-    for(int i = 0; i < arr.size(); i++) // size() returns total elements
+
+    int i;
+
+    for (i = 0; i < arr.size(); i++)
     {
-        cout << arr[i] << " "; // [] accesses element using index
+        cout << arr[i] << " ";
     }
-    // Output: 10 20 30 40 50
 
-    cout << endl << endl;
+    /*
+    Output:
+    10 20 30 40 50
+    */
 
-    cout << "arr[0]: " << arr[0] << endl; // [] accesses element using index
-    // Output: arr[0]: 10
+    cout << endl
+         << endl;
 
-    cout << "arr.at(2): " << arr.at(2) << endl; // at() safely accesses element
-    // Output: arr.at(2): 30
+    // []
 
-    cout << "arr.front(): " << arr.front() << endl; // front() returns first element
-    // Output: arr.front(): 10
+    cout << "arr[0]: " << arr[0] << endl;
 
-    cout << "arr.back(): " << arr.back() << endl; // back() returns last element
-    // Output: arr.back(): 50
+    // at()
 
-    cout << "arr.size(): " << arr.size() << endl; // size() returns total size
-    // Output: arr.size(): 5
+    cout << "arr.at(2): " << arr.at(2) << endl;
 
-    cout << "arr.empty(): " << arr.empty() << endl; // empty() checks array is empty or not
-    // Output: arr.empty(): 0
+    // front()
 
-    cout << "Address: " << arr.data() << endl; // data() returns address of first element
-    // Output: memory address like 0x61ff00
+    cout << "arr.front(): " << arr.front() << endl;
+
+    // back()
+
+    cout << "arr.back(): " << arr.back() << endl;
+
+    // size()
+
+    cout << "arr.size(): " << arr.size() << endl;
+
+    // empty()
+
+    cout << "arr.empty(): " << arr.empty() << endl;
+
+    // data()
+
+    cout << "Address: " << arr.data() << endl;
+
+    cout << endl;
+}
+
+// ================= ITERATOR FUNCTION =================
+
+void iteratorDemo()
+{
+    cout << "================ ITERATOR =================\n"
+         << endl;
+
+    array<int, 5> arr = {10, 20, 30, 40, 50};
+
+    array<int, 5>::iterator it;
+
+    it = arr.begin();
+
+    cout << "First value: " << *it << endl;
+
+    ++it;
+
+    cout << "Second value: " << *it << endl;
+
+    it = it + 2;
+
+    cout << "Fourth value: " << *it << endl;
+
+    /*
+    Random access iterator:
+    ++it -> supported
+    --it -> supported
+    it+2 -> supported
+    it-2 -> supported
+    */
+
+    cout << endl;
+}
+
+// ================= UPDATE FUNCTION =================
+
+void updateDemo()
+{
+    cout << "================ UPDATE =================\n"
+         << endl;
+
+    array<int, 5> arr = {10, 20, 30, 40, 50};
+
+    // update using index
+
+    arr[1] = 500;
+
+    cout << "After update: ";
+
+    display(arr);
+
+    /*
+    Output:
+    10 500 30 40 50
+    */
 
     cout << endl;
 
-    // ================= UPDATE =================
-    arr[1] = 500; // update value using index
-    cout << "After update: ";
-    for(int x : arr)
-    {
-        cout << x << " ";
-    }
-    // Output: 10 500 30 40 50
+    // swap()
 
-    cout << endl << endl;
-
-    // swap() exchanges data of arrays
     array<int, 3> a = {1, 2, 3};
+
     array<int, 3> b = {10, 20, 30};
+
     a.swap(b);
+
     cout << "Array a after swap: ";
-    for(int x : a)
+
+    array<int, 3>::iterator it1;
+
+    for (it1 = a.begin(); it1 != a.end(); ++it1)
     {
-        cout << x << " ";
+        cout << *it1 << " ";
     }
-    // Output: 10 20 30
+
+    /*
+    Output:
+    10 20 30
+    */
 
     cout << endl;
 
     cout << "Array b after swap: ";
-    for(int x : b)
+
+    array<int, 3>::iterator it2;
+
+    for (it2 = b.begin(); it2 != b.end(); ++it2)
     {
-        cout << x << " ";
+        cout << *it2 << " ";
     }
-    // Output: 1 2 3
 
-    cout << endl << endl;
+    /*
+    Output:
+    1 2 3
+    */
 
+    cout << endl
+         << endl;
+}
 
-    // ================= DELETE =================
+// ================= DELETE FUNCTION =================
+
+void deleteDemo()
+{
+    cout << "================ DELETE =================\n"
+         << endl;
+
+    array<int, 5> arr = {10, 500, 30, 40, 50};
 
     // STL array size is fixed
-    // Elements cannot be deleted like vector
 
-    // We can overwrite value instead
+    // overwrite value instead of delete
 
-    arr[2] = 0; // replace element with 0
+    arr[2] = 0;
 
     cout << "After replacing value: ";
 
-    for(int x : arr)
-    {
-        cout << x << " ";
-    }
+    display(arr);
 
-    // Output: 10 500 0 40 50
+    /*
+    Output:
+    10 500 0 40 50
+    */
 
-    cout << endl << endl;
+    cout << endl;
+}
 
+// ================= COMPARE FUNCTION =================
 
-
-    // ================= COMPARE =================
+void compareDemo()
+{
+    cout << "================ COMPARE =================\n"
+         << endl;
 
     array<int, 3> x = {1, 2, 3};
 
     array<int, 3> y = {1, 2, 3};
 
-    if(x == y) // compare arrays using ==
+    if (x == y)
     {
         cout << "Arrays are equal" << endl;
     }
 
-    // Output: Arrays are equal
+    /*
+    Output:
+    Arrays are equal
+    */
 
     cout << endl;
+}
 
+// ================= 2D ARRAY FUNCTION =================
 
+void twoDArrayDemo()
+{
+    cout << "================ 2D ARRAY =================\n"
+         << endl;
 
-    // ================= 2D ARRAY =================
+    array<array<int, 3>, 2> matrix =
+        {{{1, 2, 3},
+          {4, 5, 6}}};
 
-    array<array<int, 3>, 2> matrix = {{{1,2,3}, {4,5,6}}}; // 2D array
+    int i, j;
 
-    cout << "2D array:" << endl;
-
-    for(int i = 0; i < matrix.size(); i++)
+    for (i = 0; i < matrix.size(); i++)
     {
-        for(int j = 0; j < matrix[i].size(); j++)
+        for (j = 0; j < matrix[i].size(); j++)
         {
             cout << matrix[i][j] << " ";
         }
@@ -154,6 +356,27 @@ int main()
     1 2 3
     4 5 6
     */
+
+    cout << endl;
+}
+
+// ================= MAIN FUNCTION =================
+
+int main()
+{
+    createDemo();
+
+    readDemo();
+
+    iteratorDemo();
+
+    updateDemo();
+
+    deleteDemo();
+
+    compareDemo();
+
+    twoDArrayDemo();
 
     return 0;
 }

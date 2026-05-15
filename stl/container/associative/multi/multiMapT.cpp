@@ -1,25 +1,71 @@
 /*
-multimap stores data in key-value pair
-Header file: #include <map>
-Syntax: multimap<key_data_type, value_data_type> map_name;
-Example: multimap<int, string> mm;
-Important points:
+========================================================
+                 MULTIMAP IN C++
+========================================================
+
+Definition:
+- multimap stores elements in key-value pair
+- Multiple duplicate keys are allowed
+- Elements are automatically stored in sorted order by key
+
+Header File:
+    #include <map>
+
+Syntax:
+    multimap<key_data_type, value_data_type> map_name;
+
+Example:
+    multimap<int, string> mm;
+
+Internal Working:
+- Internally implemented using Red Black Tree
+- Uses bidirectional iterator
+
+Important Points:
 1. Duplicate keys are allowed
-2. Data stored in sorted order by key
-3. Internally uses Red Black Tree
-4. No indexing
-5. No [] operator
+2. Keys are automatically sorted
+3. No direct indexing
+4. [] operator NOT supported
+5. Key cannot be modified directly
+6. Value can be modified using iterator
+
+Main Functions:
+1. insert()        -> insert key-value pair
+2. size()          -> total elements
+3. empty()         -> checks container empty or not
+4. count(key)      -> total duplicate keys
+5. find(key)       -> search key
+6. equal_range()   -> access all duplicate keys
+7. erase(key)      -> delete all matching keys
+8. erase(iterator) -> delete single element
+9. clear()         -> remove all elements
+
+Iterator Support:
+- ++it -> supported
+- --it -> supported
+- it+2 -> NOT supported
+- it-2 -> NOT supported
+
+Time Complexity:
+- insert()       -> O(log n)
+- find()         -> O(log n)
+- erase()        -> O(log n)
+- count()        -> O(log n + duplicates)
+
+Example:
+    1 -> Ali
+    1 -> Sam
+    2 -> John
+    3 -> David
+
+========================================================
 */
 
 #include <iostream>
 #include <map>
 using namespace std;
 
-#include <iostream>
-#include <map>
-using namespace std;
-
-// reusable display function
+// ================= DISPLAY FUNCTION =================
 
 void display(multimap<int, string> mm)
 {
@@ -29,26 +75,20 @@ void display(multimap<int, string> mm)
     }
 }
 
-int main()
+// ================= CREATE FUNCTION =================
+
+void createDemo()
 {
-    // ================= CREATE =================
+    cout << "================ CREATE =================\n"
+         << endl;
 
-    multimap<int, string> mm; // empty multimap
-
-    // multimap stores key-value pairs
-
-    // duplicate keys are allowed
-
-    // values are automatically sorted by key
+    multimap<int, string> mm;
 
     // insert() inserts key-value pair
 
     mm.insert({1, "Ali"});
-
     mm.insert({2, "John"});
-
     mm.insert({1, "Sam"}); // duplicate key allowed
-
     mm.insert({3, "David"});
 
     cout << "Multimap elements:" << endl;
@@ -81,7 +121,7 @@ int main()
     20 -> B
     */
 
-    // make_pair() creates pair object
+    // make_pair()
 
     mm.insert(make_pair(4, "Peter"));
 
@@ -89,47 +129,37 @@ int main()
 
     display(mm);
 
-    /*
-    Output:
-    1 -> Ali
-    1 -> Sam
-    2 -> John
-    3 -> David
-    4 -> Peter
-    */
+    cout << endl;
+}
 
-    // ================= READ =================
+// ================= READ FUNCTION =================
 
-    // size() returns total key-value pairs
+void readDemo()
+{
+    cout << "================ READ =================\n"
+         << endl;
 
-    cout << "\nmm.size(): " << mm.size() << endl;
+    multimap<int, string> mm{
+        {1, "Ali"},
+        {2, "John"},
+        {1, "Sam"},
+        {3, "David"}};
 
-    // Output: 5
+    // size()
 
-    // empty() checks multimap is empty or not
+    cout << "mm.size(): " << mm.size() << endl;
 
-    // returns:
-    // 1 = true
-    // 0 = false
+    // empty()
 
     cout << "mm.empty(): " << mm.empty() << endl;
 
-    // Output: 0
-
-    // count() returns total duplicate keys
+    // count()
 
     cout << "count(1): " << mm.count(1) << endl;
 
-    // Output: 2
-
     cout << "count(2): " << mm.count(2) << endl;
 
-    // Output: 1
-
-    // find() searches key
-
-    // returns iterator if found
-    // returns mm.end() if not found
+    // find()
 
     multimap<int, string>::iterator it = mm.find(1);
 
@@ -138,9 +168,7 @@ int main()
         cout << "Found key 1 -> " << it->second << endl;
     }
 
-    // Output: Found key 1 -> Ali
-
-    // equal_range() accesses all duplicate keys
+    // equal_range()
 
     pair<
         multimap<int, string>::iterator,
@@ -157,44 +185,59 @@ int main()
         cout << i->second << " ";
     }
 
-    // Output: Ali Sam
+    cout << endl
+         << endl;
+}
 
-    // ================= ITERATOR =================
+// ================= ITERATOR FUNCTION =================
 
-    // multimap supports bidirectional iterator
+void iteratorDemo()
+{
+    cout << "================ ITERATOR =================\n"
+         << endl;
 
-    // ++it -> supported
-    // --it -> supported
+    multimap<int, string> mm{
+        {1, "Ali"},
+        {2, "John"},
+        {3, "David"}};
 
-    // it+2 -> NOT supported
-    // it-2 -> NOT supported
+    multimap<int, string>::iterator it = mm.begin();
 
-    multimap<int, string>::iterator it2 = mm.begin();
+    cout << "First element:" << endl;
 
-    cout << "\n\nFirst element:" << endl;
+    cout << it->first << " -> " << it->second << endl;
 
-    cout << it2->first << " -> " << it2->second << endl;
-
-    ++it2;
+    ++it;
 
     cout << "\nSecond element:" << endl;
 
-    cout << it2->first << " -> " << it2->second << endl;
+    cout << it->first << " -> " << it->second << endl;
 
-    // ================= UPDATE =================
+    cout << endl;
+}
 
-    // multimap does NOT support [] operator
+// ================= UPDATE FUNCTION =================
+
+void updateDemo()
+{
+    cout << "================ UPDATE =================\n"
+         << endl;
+
+    multimap<int, string> mm{
+        {1, "Ali"},
+        {2, "John"},
+        {1, "Sam"}};
 
     // update value using iterator
 
-    multimap<int, string>::iterator it3 = mm.find(2);
+    multimap<int, string>::iterator it = mm.find(2);
 
-    if (it3 != mm.end())
+    if (it != mm.end())
     {
-        it3->second = "Robert";
+        it->second = "Robert";
     }
 
-    cout << "\nAfter update:" << endl;
+    cout << "After update:" << endl;
 
     display(mm);
 
@@ -203,17 +246,30 @@ int main()
     1 -> Ali
     1 -> Sam
     2 -> Robert
-    3 -> David
-    4 -> Peter
     */
 
-    // ================= DELETE =================
+    cout << endl;
+}
 
-    // erase(key) removes all pairs with same key
+// ================= DELETE FUNCTION =================
+
+void deleteDemo()
+{
+    cout << "================ DELETE =================\n"
+         << endl;
+
+    multimap<int, string> mm{
+        {1, "Ali"},
+        {1, "Sam"},
+        {2, "Robert"},
+        {3, "David"},
+        {4, "Peter"}};
+
+    // erase(key)
 
     mm.erase(3);
 
-    cout << "\nAfter erase(3):" << endl;
+    cout << "After erase(3):" << endl;
 
     display(mm);
 
@@ -225,13 +281,13 @@ int main()
     4 -> Peter
     */
 
-    // erase(iterator) removes single element
+    // erase(iterator)
 
-    multimap<int, string>::iterator it4 = mm.find(1);
+    multimap<int, string>::iterator it = mm.find(1);
 
-    if (it4 != mm.end())
+    if (it != mm.end())
     {
-        mm.erase(it4);
+        mm.erase(it);
     }
 
     cout << "\nAfter erase(iterator):" << endl;
@@ -245,17 +301,35 @@ int main()
     4 -> Peter
     */
 
-    // clear() removes all elements
+    // clear()
 
     mm.clear();
 
     cout << "\nAfter clear()" << endl;
 
-    // empty() now returns true
-
     cout << "mm.empty(): " << mm.empty() << endl;
 
-    // Output: 1
+    /*
+    Output:
+    mm.empty(): 1
+    */
+
+    cout << endl;
+}
+
+// ================= MAIN FUNCTION =================
+
+int main()
+{
+    createDemo();
+
+    readDemo();
+
+    iteratorDemo();
+
+    updateDemo();
+
+    deleteDemo();
 
     return 0;
 }

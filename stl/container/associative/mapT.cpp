@@ -1,45 +1,100 @@
 /*
-map stores data in key-value pair
-Header file: #include <map>
-Syntax: map<key_data_type, value_data_type> map_name;
-Example: map<int, string> mp;
-Important points:
-1. Stores data using key-value pair
+========================================================
+                     MAP IN C++
+========================================================
+
+Definition:
+- map stores data in key-value pair
+- Keys are unique
+- Elements are automatically stored in sorted order by key
+
+Header File:
+    #include <map>
+
+Syntax:
+    map<key_data_type, value_data_type> map_name;
+
+Example:
+    map<int, string> mp;
+
+Internal Working:
+- Internally implemented using Red Black Tree
+- Uses bidirectional iterator
+
+Important Points:
+1. Stores data in key-value pair
 2. Keys are unique
-3. Data stored in sorted order by key
-4. Internally uses Red Black Tree
-5. No indexing
+3. Values can be duplicate
+4. Data stored in sorted order by key
+5. No indexing by position
+6. [] operator supported
+7. first = key
+8. second = value
+
+Main Functions:
+1. insert()       -> insert key-value pair
+2. [] operator    -> insert/access/update value
+3. at()           -> safely access value
+4. size()         -> total key-value pairs
+5. empty()        -> checks container empty or not
+6. find()         -> search key
+7. count()        -> checks key exists or not
+8. erase(key)     -> remove pair using key
+9. erase(iterator)-> remove single pair
+10. erase(range)  -> remove range of pairs
+11. clear()       -> remove all elements
+
+Iterator Support:
+- ++it -> supported
+- --it -> supported
+- it+2 -> NOT supported
+- it-2 -> NOT supported
+
+Time Complexity:
+- insert() -> O(log n)
+- find()   -> O(log n)
+- erase()  -> O(log n)
+- count()  -> O(log n)
+
+Example:
+    Aman  -> 201
+    David -> 202
+    Peter -> 203
+
+========================================================
 */
 
 #include <iostream>
 #include <map>
 using namespace std;
 
-// reusable display function
+// ================= DISPLAY FUNCTION =================
 
 void display(map<string, int> mp)
 {
-    for (pair<string, int> x : mp)
+    map<string, int>::iterator it;
+
+    for (it = mp.begin(); it != mp.end(); ++it)
     {
-        cout << x.first << " -> " << x.second << endl;
+        cout << it->first << " -> " << it->second << endl;
     }
 }
 
-int main()
+// ================= CREATE FUNCTION =================
+
+void createDemo()
 {
-    // ================= CREATE =================
+    cout << "================ CREATE =================\n"
+         << endl;
 
     map<string, int> mp; // empty map
-
-
 
     // uniform initialization
 
     map<string, int> student{
         {"Ali", 101},
         {"John", 102},
-        {"Sam", 103}
-    };
+        {"Sam", 103}};
 
     cout << "Uniform initialized map:" << endl;
 
@@ -52,26 +107,15 @@ int main()
     Sam -> 103
     */
 
-
-
-    // map stores data in key-value pair
-
-    // key   = unique
-    // value = can be duplicate
-
-    // map automatically stores keys in ascending order
-
-
+    cout << endl;
 
     // insert using [] operator
 
     mp["Aman"] = 201;
-
     mp["David"] = 202;
-
     mp["Peter"] = 203;
 
-    cout << "\nMap elements:" << endl;
+    cout << "Map elements:" << endl;
 
     display(mp);
 
@@ -82,53 +126,33 @@ int main()
     Peter -> 203
     */
 
+    cout << endl;
 
-
-    // insert() inserts key-value pair
+    // insert()
 
     mp.insert({"Rohit", 204});
 
-    cout << "\nAfter insert():" << endl;
+    cout << "After insert():" << endl;
 
     display(mp);
 
-    /*
-    Output:
-    Aman -> 201
-    David -> 202
-    Peter -> 203
-    Rohit -> 204
-    */
+    cout << endl;
 
-
-
-    // make_pair() creates pair object
+    // make_pair()
 
     mp.insert(make_pair("Karan", 205));
 
-    cout << "\nAfter make_pair():" << endl;
+    cout << "After make_pair():" << endl;
 
     display(mp);
 
-    /*
-    Output:
-    Aman -> 201
-    David -> 202
-    Karan -> 205
-    Peter -> 203
-    Rohit -> 204
-    */
+    cout << endl;
 
-
-
-    // duplicate keys are NOT allowed
-
-    // if same key inserted again
-    // old value gets updated
+    // duplicate key update
 
     mp["Aman"] = 999;
 
-    cout << "\nAfter duplicate key update:" << endl;
+    cout << "After duplicate key update:" << endl;
 
     display(mp);
 
@@ -141,101 +165,80 @@ int main()
     Rohit -> 204
     */
 
+    cout << endl;
+}
 
+// ================= READ FUNCTION =================
 
-    // ================= READ =================
+void readDemo()
+{
+    cout << "================ READ =================\n"
+         << endl;
 
+    map<string, int> mp;
 
+    mp["Aman"] = 999;
+    mp["David"] = 202;
+    mp["Karan"] = 205;
+    mp["Peter"] = 203;
+    mp["Rohit"] = 204;
 
-    // access value using key
+    // [] operator
 
-    cout << "\nmp[\"Peter\"]: " << mp["Peter"] << endl;
+    cout << "mp[\"Peter\"]: " << mp["Peter"] << endl;
 
-    // Output: 203
-
-
-
-    // at() safely accesses value
+    // at()
 
     cout << "mp.at(\"David\"): " << mp.at("David") << endl;
 
-    // Output: 202
-
-
-
-    // size() returns total key-value pairs
+    // size()
 
     cout << "mp.size(): " << mp.size() << endl;
 
-    // Output: 5
-
-
-
-    // empty() checks map is empty or not
-
-    // returns:
-    // 1 = true
-    // 0 = false
+    // empty()
 
     cout << "mp.empty(): " << mp.empty() << endl;
 
-    // Output: 0
+    cout << endl;
 
-
-
-    // find() searches key
-
-    // returns iterator if key found
-    // returns mp.end() if key not found
+    // find()
 
     if (mp.find("Karan") != mp.end())
     {
         cout << "Key Karan found" << endl;
     }
 
-    // Output: Key Karan found
+    cout << endl;
 
-
-
-    // count() checks key exists or not
-
-    // map stores unique keys only
-
-    // returns:
-    // 1 = key exists
-    // 0 = key does not exist
+    // count()
 
     cout << "count(\"Aman\"): " << mp.count("Aman") << endl;
 
-    // Output: 1
-
     cout << "count(\"Tom\"): " << mp.count("Tom") << endl;
 
-    // Output: 0
+    cout << endl;
+}
 
+// ================= ITERATOR FUNCTION =================
 
+void iteratorDemo()
+{
+    cout << "================ ITERATOR =================\n"
+         << endl;
 
-    // ================= ITERATOR =================
+    map<string, int> mp;
 
+    mp["Aman"] = 999;
+    mp["David"] = 202;
+    mp["Karan"] = 205;
 
+    map<string, int>::iterator it;
 
-    // map supports bidirectional iterator
+    it = mp.begin();
 
-    // ++it -> supported
-    // --it -> supported
-
-    // it+2 -> NOT supported
-    // it-2 -> NOT supported
-
-
-
-    map<string, int>::iterator it = mp.begin();
-
-    cout << "\nFirst element:" << endl;
+    cout << "First element:" << endl;
 
     cout << it->first << " -> " << it->second << endl;
-
-
 
     ++it;
 
@@ -243,15 +246,37 @@ int main()
 
     cout << it->first << " -> " << it->second << endl;
 
+    /*
+    ++it -> supported
+    --it -> supported
 
+    it+2 -> NOT supported
+    it-2 -> NOT supported
+    */
 
-    // ================= UPDATE =================
+    cout << endl;
+}
+
+// ================= UPDATE FUNCTION =================
+
+void updateDemo()
+{
+    cout << "================ UPDATE =================\n"
+         << endl;
+
+    map<string, int> mp;
+
+    mp["Aman"] = 999;
+    mp["David"] = 202;
+    mp["Karan"] = 205;
+    mp["Peter"] = 203;
+    mp["Rohit"] = 204;
 
     // update value using key
 
     mp["David"] = 500;
 
-    cout << "\nAfter update:" << endl;
+    cout << "After update:" << endl;
 
     display(mp);
 
@@ -264,45 +289,83 @@ int main()
     Rohit -> 204
     */
 
+    cout << endl;
+}
 
+// ================= DELETE FUNCTION =================
 
-    // ================= DELETE =================
+void deleteDemo()
+{
+    cout << "================ DELETE =================\n"
+         << endl;
 
-    // erase() removes pair 
-    mp.erase("Peter"); //using key
-    mp.erase(mp.begin()); //using pointer
-    mp.erase(mp.find("a"), mp.find("z")); //remove all pair from a(inclusive) to b(exclusive) 
-    cout << "\nAfter erase(\"Peter\"):" << endl;
+    map<string, int> mp;
 
-    
+    mp["Aman"] = 999;
+    mp["David"] = 500;
+    mp["Karan"] = 205;
+    mp["Peter"] = 203;
+    mp["Rohit"] = 204;
+
+    // erase(key)
+
+    mp.erase("Peter");
+
+    cout << "After erase(\"Peter\"):" << endl;
 
     display(mp);
 
-    /*
-    Output:
-    Aman -> 999
-    David -> 500
-    Karan -> 205
-    Rohit -> 204
-    */
+    cout << endl;
 
+    // erase(iterator)
 
+    mp.erase(mp.begin());
 
-    // clear() removes all elements
+    cout << "After erase(begin()):" << endl;
+
+    display(mp);
+
+    cout << endl;
+
+    // erase(range)
+
+    mp.erase(mp.find("K"), mp.end());
+
+    cout << "After erase(range):" << endl;
+
+    display(mp);
+
+    cout << endl;
+
+    // clear()
 
     mp.clear();
 
-    cout << "\nAfter clear()" << endl;
-
-
-
-    // empty() now returns true
+    cout << "After clear()" << endl;
 
     cout << "mp.empty(): " << mp.empty() << endl;
 
-    // Output: 1
+    /*
+    Output:
+    mp.empty(): 1
+    */
 
+    cout << endl;
+}
 
+// ================= MAIN FUNCTION =================
+
+int main()
+{
+    createDemo();
+
+    readDemo();
+
+    iteratorDemo();
+
+    updateDemo();
+
+    deleteDemo();
 
     return 0;
 }

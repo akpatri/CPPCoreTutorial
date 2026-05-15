@@ -1,244 +1,472 @@
 /*
-list stores elements in non-contiguous memory. doubly linked list, i.e. previous and next pointer
+========================================================
+                    LIST IN C++
+========================================================
 
-Header file: #include <list>
+Definition:
+- list stores elements in non-contiguous memory
+- Implemented using doubly linked list
+- Each node stores:
+    1. Previous pointer
+    2. Data
+    3. Next pointer
 
-Syntax: list<data_type> list_name;
+Header File:
+    #include <list>
 
-Example: list<int> l;
+Syntax:
+    list<data_type> list_name;
 
-Important points:
+Example:
+    list<int> l;
+
+Internal Working:
+- Uses doubly linked list
+- Elements are connected using previous and next pointers
+
+Important Points:
 1. Dynamic size
 2. Fast insertion and deletion
 3. No direct indexing like array/vector
 4. Uses doubly linked list
+5. Non-contiguous memory allocation
+6. Supports forward and backward traversal
+7. Slower random access compared to vector
+
+Main Functions:
+1. push_back()   -> insert at end
+2. push_front()  -> insert at beginning
+3. pop_back()    -> remove last element
+4. pop_front()   -> remove first element
+5. insert()      -> insert before iterator
+6. erase()       -> erase using iterator
+7. remove()      -> remove matching values
+8. front()       -> first element
+9. back()        -> last element
+10. size()       -> total elements
+11. empty()      -> checks empty or not
+12. clear()      -> remove all elements
+13. reverse()    -> reverse list
+14. sort()       -> sort list
+15. unique()     -> remove consecutive duplicates
+16. merge()      -> merge sorted lists
+
+Iterator Support:
+- Bidirectional iterator supported
+- ++it  -> supported
+- --it  -> supported
+- it+2  -> NOT supported
+- it-2  -> NOT supported
+
+Iterator Movement:
+- advance(it, n) is used to move iterator
+
+Time Complexity:
+- push_front() -> O(1)
+- push_back()  -> O(1)
+- pop_front()  -> O(1)
+- pop_back()   -> O(1)
+- insert()     -> O(1)
+- erase()      -> O(1)
+- search       -> O(n)
+
+Difference:
+- vector         -> contiguous memory
+- list           -> non-contiguous memory
+- forward_list   -> singly linked list
+- list           -> doubly linked list
+
+========================================================
 */
 
 #include <iostream>
 #include <list>
 using namespace std;
 
-// reusable display function
+// ================= DISPLAY FUNCTION =================
+
 void display(list<int> l)
 {
-    // range based loop to print all elements
+    list<int>::iterator it;
 
-    for (int x : l)
+    for (it = l.begin(); it != l.end(); ++it)
     {
-        cout << x << " ";
+        cout << *it << " ";
     }
 
     cout << endl;
 }
 
-int main()
+// ================= CREATE FUNCTION =================
+
+void createDemo()
 {
-    // ================= CREATE =================
+    cout << "================ CREATE =================\n"
+         << endl;
 
     list<int> l; // empty list
 
-    list<int> l2 = {10, 20, 30}; // list with initializer list
+    list<int> l2 = {10, 20, 30};
 
-    list<int> l3(5); // list of size 5 with default value 0
+    list<int> l3(5);
 
-    list<int> l4(5, 100); // list of size 5 with all values = 100
+    list<int> l4(5, 100);
 
-    list<int> l5{1, 2, 3}; // uniform initialization
+    list<int> l5{1, 2, 3};
 
     cout << "l4 elements: ";
 
     display(l4);
 
-    // Output: 100 100 100 100 100
+    /*
+    Output:
+    100 100 100 100 100
+    */
 
-    // push_back() inserts element at end
+    cout << endl;
+
+    // push_back()
 
     l2.push_back(40);
-
     l2.push_back(50);
 
-    cout << "\nAfter push_back(): ";
+    cout << "After push_back(): ";
 
     display(l2);
 
-    // Output: 10 20 30 40 50
+    /*
+    Output:
+    10 20 30 40 50
+    */
 
-    // push_front() inserts element at beginning
+    cout << endl;
+
+    // push_front()
 
     l2.push_front(5);
 
-    cout << "\nAfter push_front(): ";
+    cout << "After push_front(): ";
 
     display(l2);
 
-    // Output: 5 10 20 30 40 50
+    /*
+    Output:
+    5 10 20 30 40 50
+    */
 
-    // ================= READ =================
+    cout << endl;
+}
 
-    cout << "\nList elements: ";
+// ================= READ FUNCTION =================
 
-    display(l2);
+void readDemo()
+{
+    cout << "================ READ =================\n"
+         << endl;
 
-    // Output: 5 10 20 30 40 50
+    list<int> l = {5, 10, 20, 30, 40, 50};
 
-    // front() returns first element
+    cout << "List elements: ";
 
-    cout << "\nl2.front(): " << l2.front() << endl;
+    display(l);
 
-    // Output: 5
+    /*
+    Output:
+    5 10 20 30 40 50
+    */
 
-    // back() returns last element
+    cout << endl;
 
-    cout << "l2.back(): " << l2.back() << endl;
+    // front()
 
-    // Output: 50
+    cout << "l.front(): " << l.front() << endl;
 
-    // size() returns total number of elements
+    /*
+    Output:
+    5
+    */
 
-    cout << "l2.size(): " << l2.size() << endl;
+    // back()
 
-    // Output: 6
+    cout << "l.back(): " << l.back() << endl;
 
-    // empty() checks list is empty or not
-    // returns 1 = true
-    // returns 0 = false
+    /*
+    Output:
+    50
+    */
 
-    cout << "l2.empty(): " << l2.empty() << endl;
+    // size()
 
-    // Output: 0
+    cout << "l.size(): " << l.size() << endl;
 
-    // ================= ITERATOR =================
+    /*
+    Output:
+    6
+    */
 
-    // begin() returns iterator pointing to first element
+    // empty()
 
-    list<int>::iterator it = l2.begin();
+    cout << "l.empty(): " << l.empty() << endl;
 
-    // list supports only bidirectional iterator
-    // so:
-    // ++it  -> supported
-    // --it  -> supported
-    // it+3  -> NOT supported
-    // it-3  -> NOT supported
+    /*
+    Output:
+    0
+    */
 
-    // advance() is used to move iterator forward/backward
+    cout << endl;
+}
+
+// ================= ITERATOR FUNCTION =================
+
+void iteratorDemo()
+{
+    cout << "================ ITERATOR =================\n"
+         << endl;
+
+    list<int> l = {5, 10, 20, 30, 40};
+
+    list<int>::iterator it;
+
+    it = l.begin();
 
     advance(it, 2);
 
-    // iterator now points to 3rd element
+    cout << "Iterator value: " << *it << endl;
 
-    // *it dereferences iterator
+    /*
+    Output:
+    20
+    */
 
-    cout << "\nIterator value: " << *it << endl;
+    /*
+    Bidirectional iterator:
+    ++it -> supported
+    --it -> supported
+    it+2 -> NOT supported
+    it-2 -> NOT supported
+    */
 
-    // Output: 20
+    cout << endl;
+}
 
-    // ================= UPDATE =================
+// ================= UPDATE FUNCTION =================
 
-    // updating value using iterator
+void updateDemo()
+{
+    cout << "================ UPDATE =================\n"
+         << endl;
+
+    list<int> l = {5, 10, 20, 30, 40, 50};
+
+    list<int>::iterator it;
+
+    it = l.begin();
+
+    advance(it, 2);
+
+    // update value
 
     *it = 500;
 
-    cout << "\nAfter update: ";
+    cout << "After update: ";
 
-    display(l2);
+    display(l);
 
-    // Output: 5 10 500 30 40 50
+    /*
+    Output:
+    5 10 500 30 40 50
+    */
 
-    // insert() inserts value before iterator position
+    cout << endl;
 
-    list<int>::iterator it2 = l2.begin();
+    // insert()
+
+    list<int>::iterator it2;
+
+    it2 = l.begin();
 
     advance(it2, 1);
 
-    l2.insert(it2, 99);
+    l.insert(it2, 99);
 
-    cout << "\nAfter insert(): ";
+    cout << "After insert(): ";
 
-    display(l2);
+    display(l);
 
-    // Output: 5 99 10 500 30 40 50
+    /*
+    Output:
+    5 99 10 500 30 40 50
+    */
 
-    // ================= DELETE =================
+    cout << endl;
+}
 
-    // pop_back() removes last element
+// ================= DELETE FUNCTION =================
 
-    l2.pop_back();
+void deleteDemo()
+{
+    cout << "================ DELETE =================\n"
+         << endl;
 
-    cout << "\nAfter pop_back(): ";
+    list<int> l = {5, 99, 10, 500, 30, 40, 50};
 
-    display(l2);
+    // pop_back()
 
-    // Output: 5 99 10 500 30 40
+    l.pop_back();
 
-    // pop_front() removes first element
+    cout << "After pop_back(): ";
 
-    l2.pop_front();
+    display(l);
 
-    cout << "\nAfter pop_front(): ";
+    /*
+    Output:
+    5 99 10 500 30 40
+    */
 
-    display(l2);
+    cout << endl;
 
-    // Output: 99 10 500 30 40
+    // pop_front()
 
-    // erase() removes element using iterator
+    l.pop_front();
 
-    list<int>::iterator it3 = l2.begin();
+    cout << "After pop_front(): ";
 
-    advance(it3, 2);
+    display(l);
 
-    l2.erase(it3);
+    /*
+    Output:
+    99 10 500 30 40
+    */
 
-    cout << "\nAfter erase(): ";
+    cout << endl;
 
-    display(l2);
+    // erase()
 
-    // Output: 99 10 30 40
+    list<int>::iterator it;
 
-    // remove() removes all matching values
+    it = l.begin();
 
-    l2.remove(10);
+    advance(it, 2);
 
-    cout << "\nAfter remove(10): ";
+    l.erase(it);
 
-    display(l2);
+    cout << "After erase(): ";
 
-    // Output: 99 30 40
+    display(l);
 
-    // ================= EXTRA FUNCTIONS =================
+    /*
+    Output:
+    99 10 30 40
+    */
 
-    // reverse() reverses list
+    cout << endl;
 
-    l2.reverse();
+    // remove()
 
-    cout << "\nAfter reverse(): ";
+    l.remove(10);
 
-    display(l2);
+    cout << "After remove(10): ";
 
-    // Output: 40 30 99
+    display(l);
 
-    // sort() sorts elements in ascending order
+    /*
+    Output:
+    99 30 40
+    */
 
-    l2.sort();
+    cout << endl;
 
-    cout << "\nAfter sort(): ";
+    // clear()
 
-    display(l2);
+    l.clear();
 
-    // Output: 30 40 99
+    cout << "After clear()" << endl;
 
-    // unique() removes consecutive duplicate values
+    cout << "l.empty(): " << l.empty() << endl;
+
+    /*
+    Output:
+    1
+    */
+
+    cout << endl;
+}
+
+// ================= REVERSE FUNCTION =================
+
+void reverseDemo()
+{
+    cout << "================ REVERSE =================\n"
+         << endl;
+
+    list<int> l = {99, 30, 40};
+
+    l.reverse();
+
+    cout << "After reverse(): ";
+
+    display(l);
+
+    /*
+    Output:
+    40 30 99
+    */
+
+    cout << endl;
+}
+
+// ================= SORT FUNCTION =================
+
+void sortDemo()
+{
+    cout << "================ SORT =================\n"
+         << endl;
+
+    list<int> l = {40, 10, 30, 20};
+
+    l.sort();
+
+    cout << "After sort(): ";
+
+    display(l);
+
+    /*
+    Output:
+    10 20 30 40
+    */
+
+    cout << endl;
+}
+
+// ================= UNIQUE FUNCTION =================
+
+void uniqueDemo()
+{
+    cout << "================ UNIQUE =================\n"
+         << endl;
 
     list<int> dup = {1, 1, 2, 2, 3, 3};
 
     dup.unique();
 
-    cout << "\nAfter unique(): ";
+    cout << "After unique(): ";
 
     display(dup);
 
-    // Output: 1 2 3
+    /*
+    Output:
+    1 2 3
+    */
 
-    // merge() merges two sorted lists
+    cout << endl;
+}
+
+// ================= MERGE FUNCTION =================
+
+void mergeDemo()
+{
+    cout << "================ MERGE =================\n"
+         << endl;
 
     list<int> m1 = {1, 3, 5};
 
@@ -246,25 +474,39 @@ int main()
 
     m1.merge(m2);
 
-    cout << "\nAfter merge(): ";
+    cout << "After merge(): ";
 
     display(m1);
 
-    // Output: 1 2 3 4 5 6
+    /*
+    Output:
+    1 2 3 4 5 6
+    */
 
-    // clear() removes all elements
+    cout << endl;
+}
 
-    l2.clear();
+// ================= MAIN FUNCTION =================
 
-    cout << "\nSize after clear(): " << l2.size() << endl;
+int main()
+{
+    createDemo();
 
-    // Output: 0
+    readDemo();
 
-    // empty() now returns true
+    iteratorDemo();
 
-    cout << "l2.empty(): " << l2.empty() << endl;
+    updateDemo();
 
-    // Output: 1
+    deleteDemo();
+
+    reverseDemo();
+
+    sortDemo();
+
+    uniqueDemo();
+
+    mergeDemo();
 
     return 0;
 }

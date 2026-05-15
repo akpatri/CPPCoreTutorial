@@ -1,229 +1,419 @@
 /*
-forward_list stores elements using singly linked list
+========================================================
+                FORWARD_LIST IN C++
+========================================================
 
-Header file:
-#include <forward_list>
+Definition:
+- forward_list stores elements using singly linked list
+- Supports only forward traversal
+
+Header File:
+    #include <forward_list>
 
 Syntax:
-forward_list<data_type> list_name;
+    forward_list<data_type> list_name;
 
 Example:
-forward_list<int> fl;
+    forward_list<int> fl;
 
-Important points:
+Internal Working:
+- Implemented using singly linked list
+- Each node stores:
+    1. Data
+    2. Address of next node
+
+Important Points:
 1. Dynamic size
 2. Fast insertion and deletion
 3. Uses singly linked list
 4. Only forward traversal allowed
 5. No size() function
 6. No back() function
+7. push_back() NOT supported
+8. pop_back() NOT supported
+9. Memory efficient compared to list
+
+Main Functions:
+1. assign()        -> replace elements
+2. push_front()    -> insert at beginning
+3. pop_front()     -> remove first element
+4. insert_after()  -> insert after iterator
+5. erase_after()   -> erase next element
+6. remove()        -> remove matching values
+7. clear()         -> remove all elements
+8. front()         -> first element
+9. empty()         -> checks empty or not
+10. sort()         -> sort elements
+11. reverse()      -> reverse elements
+12. unique()       -> remove consecutive duplicates
+13. merge()        -> merge sorted lists
+
+Iterator Support:
+- Forward iterator supported
+- ++it  -> supported
+- --it  -> NOT supported
+- it+2  -> NOT supported
+- it-2  -> NOT supported
+
+Time Complexity:
+- push_front()   -> O(1)
+- pop_front()    -> O(1)
+- insert_after() -> O(1)
+- erase_after()  -> O(1)
+- search          -> O(n)
+
+Difference:
+- forward_list -> singly linked list
+- list         -> doubly linked list
+
+========================================================
 */
 
 #include <iostream>
 #include <forward_list>
 using namespace std;
 
-#include <iostream>
-#include <forward_list>
-using namespace std;
-
-// reusable display function
+// ================= DISPLAY FUNCTION =================
 
 void display(forward_list<int> fl)
 {
-    for (int x : fl)
+    forward_list<int>::iterator it;
+
+    for (it = fl.begin(); it != fl.end(); ++it)
     {
-        cout << x << " ";
+        cout << *it << " ";
     }
 
     cout << endl;
 }
 
-int main()
+// ================= CREATE FUNCTION =================
+
+void createDemo()
 {
-    // ================= CREATE =================
+    cout << "================ CREATE =================\n"
+         << endl;
 
-    forward_list<int> fl; // empty forward_list
+    forward_list<int> fl; // empty list
 
-    forward_list<int> fl2 = {10, 20, 30}; // initialize with values
+    forward_list<int> fl2 = {10, 20, 30};
 
-    forward_list<int> fl3(5); // create 5 elements with default value 0
+    forward_list<int> fl3(5); // 5 elements with default value 0
 
-    forward_list<int> fl4(5, 100); // create 5 elements with value 100
+    forward_list<int> fl4(5, 100); // 5 elements with value 100
 
-    forward_list<int> fl5{1, 2, 3}; // uniform initialization
+    forward_list<int> fl5{1, 2, 3};
 
     cout << "fl4 elements: ";
 
     display(fl4);
 
-    // Output: 100 100 100 100 100
+    /*
+    Output:
+    100 100 100 100 100
+    */
 
-    // assign() replaces old elements with new values
+    cout << endl;
+
+    // assign()
 
     fl3.assign({7, 8, 9});
 
-    cout << "\nAfter assign(): ";
+    cout << "After assign(): ";
 
     display(fl3);
 
-    // Output: 7 8 9
+    /*
+    Output:
+    7 8 9
+    */
 
-    // push_front() inserts element at beginning
-    // forward_list supports only push_front()
-    // push_back() is NOT supported
+    cout << endl;
+
+    // push_front()
 
     fl2.push_front(5);
 
-    cout << "\nAfter push_front(): ";
+    cout << "After push_front(): ";
 
     display(fl2);
 
-    // Output: 5 10 20 30
+    /*
+    Output:
+    5 10 20 30
+    */
 
-    // insert_after() inserts element after iterator position
+    cout << endl;
 
-    forward_list<int>::iterator it = fl2.begin();
+    // insert_after()
+
+    forward_list<int>::iterator it;
+
+    it = fl2.begin();
 
     fl2.insert_after(it, 99);
 
-    cout << "\nAfter insert_after(): ";
+    cout << "After insert_after(): ";
 
     display(fl2);
 
-    // Output: 5 99 10 20 30
+    /*
+    Output:
+    5 99 10 20 30
+    */
 
-    // ================= READ =================
+    cout << endl;
+}
 
-    cout << "\nforward_list elements: ";
+// ================= READ FUNCTION =================
 
-    display(fl2);
+void readDemo()
+{
+    cout << "================ READ =================\n"
+         << endl;
 
-    // Output: 5 99 10 20 30
+    forward_list<int> fl = {5, 99, 10, 20, 30};
 
-    // front() returns first element
+    cout << "forward_list elements: ";
 
-    cout << "\nfl2.front(): " << fl2.front() << endl;
+    display(fl);
 
-    // Output: 5
+    /*
+    Output:
+    5 99 10 20 30
+    */
 
-    // empty() checks list is empty or not
+    cout << endl;
 
-    cout << "fl2.empty(): " << fl2.empty() << endl;
+    // front()
 
-    // Output: 0
+    cout << "fl.front(): " << fl.front() << endl;
 
-    // IMPORTANT:
-    // forward_list is singly linked list
-    // so it supports only forward iterator
+    /*
+    Output:
+    5
+    */
 
-    // ++it  -> supported
-    // --it  -> NOT supported
-    // it+2  -> NOT supported
-    // it-2  -> NOT supported
+    // empty()
 
-    // ================= UPDATE =================
+    cout << "fl.empty(): " << fl.empty() << endl;
 
-    forward_list<int>::iterator it2 = fl2.begin();
+    /*
+    Output:
+    0
+    */
 
-    ++it2; // move iterator forward by 1 position
+    cout << endl;
+}
 
-    *it2 = 500; // update value using iterator
+// ================= ITERATOR FUNCTION =================
 
-    cout << "\nAfter update(): ";
+void iteratorDemo()
+{
+    cout << "================ ITERATOR =================\n"
+         << endl;
 
-    display(fl2);
+    forward_list<int> fl = {10, 20, 30};
 
-    // Output: 5 500 10 20 30
+    forward_list<int>::iterator it;
 
-    // ================= DELETE =================
+    it = fl.begin();
 
-    // pop_front() removes first element
-    // pop_back() is NOT supported
+    cout << "First value: " << *it << endl;
 
-    fl2.pop_front();
+    ++it;
 
-    cout << "\nAfter pop_front(): ";
+    cout << "Second value: " << *it << endl;
 
-    display(fl2);
+    /*
+    Forward iterator:
+    ++it -> supported
+    --it -> NOT supported
+    it+2 -> NOT supported
+    it-2 -> NOT supported
+    */
 
-    // Output: 500 10 20 30
+    cout << endl;
+}
 
-    // erase_after() removes next element
+// ================= UPDATE FUNCTION =================
 
-    forward_list<int>::iterator it3 = fl2.begin();
+void updateDemo()
+{
+    cout << "================ UPDATE =================\n"
+         << endl;
 
-    fl2.erase_after(it3);
+    forward_list<int> fl = {5, 99, 10, 20, 30};
 
-    cout << "\nAfter erase_after(): ";
+    forward_list<int>::iterator it;
 
-    display(fl2);
+    it = fl.begin();
 
-    // Output: 500 20 30
+    ++it;
 
-    // remove() removes all matching values
+    *it = 500;
 
-    fl2.remove(20);
+    cout << "After update(): ";
 
-    cout << "\nAfter remove(20): ";
+    display(fl);
 
-    display(fl2);
+    /*
+    Output:
+    5 500 10 20 30
+    */
 
-    // Output: 500 30
+    cout << endl;
+}
 
-    // clear() removes all elements
+// ================= DELETE FUNCTION =================
 
-    fl2.clear();
+void deleteDemo()
+{
+    cout << "================ DELETE =================\n"
+         << endl;
 
-    cout << "\nAfter clear()" << endl;
+    forward_list<int> fl = {5, 500, 10, 20, 30};
 
-    cout << "fl2.empty(): " << fl2.empty() << endl;
+    // pop_front()
 
-    // Output: 1
+    fl.pop_front();
 
-    // ================= SORT =================
+    cout << "After pop_front(): ";
+
+    display(fl);
+
+    /*
+    Output:
+    500 10 20 30
+    */
+
+    cout << endl;
+
+    // erase_after()
+
+    forward_list<int>::iterator it;
+
+    it = fl.begin();
+
+    fl.erase_after(it);
+
+    cout << "After erase_after(): ";
+
+    display(fl);
+
+    /*
+    Output:
+    500 20 30
+    */
+
+    cout << endl;
+
+    // remove()
+
+    fl.remove(20);
+
+    cout << "After remove(20): ";
+
+    display(fl);
+
+    /*
+    Output:
+    500 30
+    */
+
+    cout << endl;
+
+    // clear()
+
+    fl.clear();
+
+    cout << "After clear()" << endl;
+
+    cout << "fl.empty(): " << fl.empty() << endl;
+
+    /*
+    Output:
+    1
+    */
+
+    cout << endl;
+}
+
+// ================= SORT FUNCTION =================
+
+void sortDemo()
+{
+    cout << "================ SORT =================\n"
+         << endl;
 
     forward_list<int> nums = {40, 10, 30, 20};
 
-    // sort() sorts elements in ascending order
-
     nums.sort();
 
-    cout << "\nAfter sort(): ";
+    cout << "After sort(): ";
 
     display(nums);
 
-    // Output: 10 20 30 40
+    /*
+    Output:
+    10 20 30 40
+    */
 
-    // ================= REVERSE =================
+    cout << endl;
+}
 
-    // reverse() reverses elements
+// ================= REVERSE FUNCTION =================
+
+void reverseDemo()
+{
+    cout << "================ REVERSE =================\n"
+         << endl;
+
+    forward_list<int> nums = {10, 20, 30, 40};
 
     nums.reverse();
 
-    cout << "\nAfter reverse(): ";
+    cout << "After reverse(): ";
 
     display(nums);
 
-    // Output: 40 30 20 10
+    /*
+    Output:
+    40 30 20 10
+    */
 
-    // ================= UNIQUE =================
+    cout << endl;
+}
 
-    // unique() removes consecutive duplicate values
+// ================= UNIQUE FUNCTION =================
+
+void uniqueDemo()
+{
+    cout << "================ UNIQUE =================\n"
+         << endl;
 
     forward_list<int> dup = {1, 1, 2, 2, 3, 3};
 
     dup.unique();
 
-    cout << "\nAfter unique(): ";
+    cout << "After unique(): ";
 
     display(dup);
 
-    // Output: 1 2 3
+    /*
+    Output:
+    1 2 3
+    */
 
-    // ================= MERGE =================
+    cout << endl;
+}
 
-    // merge() merges two sorted forward_lists
+// ================= MERGE FUNCTION =================
+
+void mergeDemo()
+{
+    cout << "================ MERGE =================\n"
+         << endl;
 
     forward_list<int> a = {1, 3, 5};
 
@@ -231,11 +421,39 @@ int main()
 
     a.merge(b);
 
-    cout << "\nAfter merge(): ";
+    cout << "After merge(): ";
 
     display(a);
 
-    // Output: 1 2 3 4 5 6
+    /*
+    Output:
+    1 2 3 4 5 6
+    */
+
+    cout << endl;
+}
+
+// ================= MAIN FUNCTION =================
+
+int main()
+{
+    createDemo();
+
+    readDemo();
+
+    iteratorDemo();
+
+    updateDemo();
+
+    deleteDemo();
+
+    sortDemo();
+
+    reverseDemo();
+
+    uniqueDemo();
+
+    mergeDemo();
 
     return 0;
 }

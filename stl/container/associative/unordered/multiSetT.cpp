@@ -1,206 +1,351 @@
 /*
-unordered_multiset stores values in unordered form
+========================================================
+            UNORDERED_MULTISET IN C++
+========================================================
 
-Header file:
-#include <unordered_set>
+Definition:
+- unordered_multiset stores values in unordered form
+- Duplicate values are allowed
+- Uses hashing for fast searching
+
+Header File:
+    #include <unordered_set>
 
 Syntax:
-unordered_multiset<data_type> set_name;
+    unordered_multiset<data_type> set_name;
 
 Example:
-unordered_multiset<int> ums;
+    unordered_multiset<int> ums;
 
-Important points:
+Internal Working:
+- Internally implemented using Hash Table
+- Uses hashing technique
+
+Important Points:
 1. Duplicate values are allowed
 2. Unordered storage
-3. Faster searching using hashing
+3. Faster searching compared to multiset
 4. No indexing
+5. Values cannot be modified directly
+6. Order is NOT fixed
+
+Main Functions:
+1. insert()        -> insert value
+2. size()          -> total elements
+3. empty()         -> checks container empty or not
+4. count()         -> returns total occurrences
+5. find()          -> search value
+6. equal_range()   -> access duplicate values
+7. erase(value)    -> remove all occurrences
+8. erase(iterator) -> remove single occurrence
+9. clear()         -> remove all elements
+
+Iterator Support:
+- Forward iterator supported
+- ++it -> supported
+- --it -> NOT supported
+
+Time Complexity:
+(Average Case)
+- insert() -> O(1)
+- find()   -> O(1)
+- erase()  -> O(1)
+
+(Worst Case)
+- O(n)
+
+Example Output:
+    30 10 20 10
+
+Order is NOT fixed
+
+========================================================
 */
 
 #include <iostream>
 #include <unordered_set>
 using namespace std;
 
-int main()
+// ================= DISPLAY FUNCTION =================
+
+void display(unordered_multiset<int> ums)
 {
-    // ================= CREATE =================
+    unordered_multiset<int>::iterator it;
+
+    for (it = ums.begin(); it != ums.end(); ++it)
+    {
+        cout << *it << " ";
+    }
+
+    cout << endl;
+}
+
+// ================= CREATE FUNCTION =================
+
+void createDemo()
+{
+    cout << "================ CREATE =================\n"
+         << endl;
 
     unordered_multiset<int> ums; // empty unordered_multiset
 
-    ums.insert(10); // insert() adds value
-
+    ums.insert(10);
     ums.insert(20);
-
     ums.insert(10); // duplicate allowed
-
     ums.insert(30);
 
     cout << "unordered_multiset elements: ";
 
-    for(int x : ums)
-    {
-        cout << x << " ";
-    }
+    display(ums);
 
     /*
     Output can be:
     30 10 20 10
-
-    Order is not fixed
     */
 
-    cout << endl << endl;
+    cout << endl;
 
-
-    // insert() inserts more values
+    // insert more values
 
     ums.insert(40);
-
     ums.insert(20);
 
     cout << "After insert(): ";
 
-    for(int x : ums)
-    {
-        cout << x << " ";
-    }
+    display(ums);
 
     /*
     Output can be:
     40 30 20 20 10 10
     */
 
-    cout << endl << endl;
+    cout << endl;
+}
 
+// ================= READ FUNCTION =================
 
+void readDemo()
+{
+    cout << "================ READ =================\n"
+         << endl;
 
-    // ================= READ =================
+    unordered_multiset<int> ums;
 
-    cout << "ums.size(): " << ums.size() << endl; // size() returns total elements
-    // Output: ums.size(): 6
+    ums.insert(10);
+    ums.insert(20);
+    ums.insert(10);
+    ums.insert(30);
+    ums.insert(40);
+    ums.insert(20);
 
-    cout << "ums.empty(): " << ums.empty() << endl; // empty() checks set is empty or not
-    // Output: ums.empty(): 0
+    // size()
+
+    cout << "ums.size(): " << ums.size() << endl;
+
+    // empty()
+
+    cout << "ums.empty(): " << ums.empty() << endl;
 
     cout << endl;
 
-
-    // count() returns total occurrences
+    // count()
 
     cout << "count(10): " << ums.count(10) << endl;
-    // Output: count(10): 2
 
     cout << "count(20): " << ums.count(20) << endl;
-    // Output: count(20): 2
 
     cout << endl;
 
+    // find()
 
-    // find() searches value
-
-    if(ums.find(30) != ums.end())
+    if (ums.find(30) != ums.end())
     {
         cout << "30 found" << endl;
     }
 
-    // Output: 30 found
-
     cout << endl;
 
+    // equal_range()
 
-    // equal_range() accesses duplicate values
-
-    auto range = ums.equal_range(20);
+    pair<
+        unordered_multiset<int>::iterator,
+        unordered_multiset<int>::iterator>
+        range = ums.equal_range(20);
 
     cout << "Values of 20: ";
 
-    for(auto it = range.first; it != range.second; it++)
+    unordered_multiset<int>::iterator it;
+
+    for (it = range.first; it != range.second; ++it)
     {
         cout << *it << " ";
     }
 
-    // Output: 20 20
+    /*
+    Output can be:
+    20 20
+    */
 
-    cout << endl << endl;
+    cout << endl
+         << endl;
+}
 
+// ================= ITERATOR FUNCTION =================
 
+void iteratorDemo()
+{
+    cout << "================ ITERATOR =================\n"
+         << endl;
 
-    // ================= UPDATE =================
+    unordered_multiset<int> ums;
+
+    ums.insert(10);
+    ums.insert(20);
+    ums.insert(30);
+
+    unordered_multiset<int>::iterator it;
+
+    it = ums.begin();
+
+    cout << "First element: " << *it << endl;
+
+    ++it;
+
+    cout << "Second element: " << *it << endl;
+
+    /*
+    ++it -> supported
+    --it -> NOT supported
+    */
+
+    cout << endl;
+}
+
+// ================= UPDATE FUNCTION =================
+
+void updateDemo()
+{
+    cout << "================ UPDATE =================\n"
+         << endl;
+
+    unordered_multiset<int> ums;
+
+    ums.insert(10);
+    ums.insert(20);
+    ums.insert(10);
+    ums.insert(30);
+    ums.insert(40);
+    ums.insert(20);
 
     // unordered_multiset values cannot be updated directly
 
     // erase old value and insert new value
 
-    auto it2 = ums.find(30);
+    unordered_multiset<int>::iterator it;
 
-    if(it2 != ums.end())
+    it = ums.find(30);
+
+    if (it != ums.end())
     {
-        ums.erase(it2); // remove single occurrence
+        ums.erase(it); // remove single occurrence
     }
 
     ums.insert(300);
 
     cout << "After update:" << endl;
 
-    for(int x : ums)
-    {
-        cout << x << " ";
-    }
+    display(ums);
 
     /*
     Output can be:
     300 40 20 20 10 10
     */
 
-    cout << endl << endl;
+    cout << endl;
+}
 
+// ================= DELETE FUNCTION =================
 
+void deleteDemo()
+{
+    cout << "================ DELETE =================\n"
+         << endl;
 
-    // ================= DELETE =================
+    unordered_multiset<int> ums;
 
-    ums.erase(10); // erase(value) removes all occurrences of 10
+    ums.insert(10);
+    ums.insert(20);
+    ums.insert(10);
+    ums.insert(20);
+    ums.insert(40);
+    ums.insert(300);
+
+    // erase(value)
+
+    ums.erase(10);
 
     cout << "After erase(10): ";
 
-    for(int x : ums)
-    {
-        cout << x << " ";
-    }
+    display(ums);
 
     /*
     Output can be:
     300 40 20 20
     */
 
-    cout << endl << endl;
+    cout << endl;
 
+    // erase(iterator)
 
-    auto it3 = ums.find(20);
+    unordered_multiset<int>::iterator it;
 
-    if(it3 != ums.end())
+    it = ums.find(20);
+
+    if (it != ums.end())
     {
-        ums.erase(it3); // erase(iterator) removes single occurrence
+        ums.erase(it); // removes single occurrence
     }
 
     cout << "After erase(iterator): ";
 
-    for(int x : ums)
-    {
-        cout << x << " ";
-    }
+    display(ums);
 
     /*
     Output can be:
     300 40 20
     */
 
-    cout << endl << endl;
+    cout << endl;
 
+    // clear()
 
-    ums.clear(); // clear() removes all elements
+    ums.clear();
+
+    cout << "After clear()" << endl;
 
     cout << "ums.empty(): " << ums.empty() << endl;
-    // Output: ums.empty(): 1
+
+    /*
+    Output:
+    ums.empty(): 1
+    */
+
+    cout << endl;
+}
+
+// ================= MAIN FUNCTION =================
+
+int main()
+{
+    createDemo();
+
+    readDemo();
+
+    iteratorDemo();
+
+    updateDemo();
+
+    deleteDemo();
 
     return 0;
 }

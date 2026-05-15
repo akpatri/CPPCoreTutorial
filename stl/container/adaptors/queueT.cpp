@@ -15,12 +15,6 @@ Meaning:
 - Insertion happens from BACK.
 - Deletion happens from FRONT.
 
-Real Life Example:
-- Ticket Counter
-- Printer Queue
-- CPU Scheduling
-- Customer Service Line
-
 Important Points:
 1. FIFO structure
 2. No random access

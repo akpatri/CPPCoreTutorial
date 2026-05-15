@@ -1,94 +1,366 @@
 /*
-deque means double ended queue
-Insertion and deletion can happen from both ends: stack and queue behavour
-Header file: #include <deque>
-Syntax: deque<data_type> deque_name;
-Example: deque<int> dq;
-Important points:
+========================================================
+                    DEQUE IN C++
+========================================================
+
+Definition:
+- deque means Double Ended Queue
+- Insertion and deletion can happen from both ends
+- Behaves like both stack and queue
+
+Header File:
+    #include <deque>
+
+Syntax:
+    deque<data_type> deque_name;
+
+Example:
+    deque<int> dq;
+
+Internal Working:
+- Internally implemented using dynamic segmented arrays
+- Provides fast insertion/deletion from both ends
+
+Important Points:
 1. Dynamic size
-2. Fast insertion and deletion from both ends
+2. Fast insertion/deletion from front and back
 3. Supports indexing
 4. Combination of vector and queue features
+5. Random access supported
+6. Slower middle insertion compared to ends
+
+Main Functions:
+1. push_back()    -> insert at end
+2. push_front()   -> insert at beginning
+3. pop_back()     -> remove from end
+4. pop_front()    -> remove from beginning
+5. insert()       -> insert at specific position
+6. emplace()      -> construct and insert element
+7. erase()        -> remove specific element
+8. front()        -> first element
+9. back()         -> last element
+10. at()          -> safe access
+11. size()        -> total elements
+12. empty()       -> checks deque empty or not
+13. clear()       -> remove all elements
+
+Iterator Support:
+- Random access iterator supported
+- ++it   -> supported
+- --it   -> supported
+- it+2   -> supported
+- it-2   -> supported
+
+Difference:
+- []   -> no bounds checking
+- at() -> throws exception if out of range
+
+Time Complexity:
+- push_front() -> O(1)
+- push_back()  -> O(1)
+- pop_front()  -> O(1)
+- pop_back()   -> O(1)
+- insert()     -> O(n)
+- erase()      -> O(n)
+- access       -> O(1)
+
+Example:
+    1 5 10 20
+
+========================================================
 */
 
 #include <iostream>
 #include <deque>
 using namespace std;
-int main()
+
+// ================= DISPLAY FUNCTION =================
+
+void display(deque<int> dq)
 {
-    // ================= CREATE =================
-    deque<int> dq;    // empty deque
-    dq.push_back(10); // push_back() inserts at end
-    dq.push_back(20);
-    dq.push_front(5); // push_front() inserts at beginning
-    dq.push_front(1);
-    deque<int>::iterator inserted = dq.emplace(dq.begin() + 2, 19); // insert 19 brfore 3rd element. return iterator pointed to inserted data
-    dq.insert(inserted, 20);
-    cout << "Deque elements: ";
-    for (int x : dq)
+    deque<int>::iterator it;
+
+    for (it = dq.begin(); it != dq.end(); ++it)
     {
-        cout << x << " ";
-    } // Output: 1 5 10 20
-    cout << endl
+        cout << *it << " ";
+    }
+
+    cout << endl;
+}
+
+// ================= CREATE FUNCTION =================
+
+void createDemo()
+{
+    cout << "================ CREATE =================\n"
          << endl;
 
-    // ================= READ =================
-    cout << "dq[1]: " << dq[1] << endl;           // [] accesses element using index // Output: dq[1]: 5
-    cout << "dq.at(2): " << dq.at(2) << endl;     // at() safely accesses element // Output: dq.at(2): 10
-    cout << "dq.front(): " << dq.front() << endl; // front() returns first element // Output: dq.front(): 1
-    cout << "dq.back(): " << dq.back() << endl;   // back() returns last element // Output: dq.back(): 20
-    cout << "dq.size(): " << dq.size() << endl;   // size() returns total elements // Output: dq.size(): 4
-    cout << "dq.empty(): " << dq.empty() << endl; // empty() checks deque is empty or not // Output: dq.empty(): 0
+    deque<int> dq; // empty deque
+
+    // push_back()
+
+    dq.push_back(10);
+    dq.push_back(20);
+
+    // push_front()
+
+    dq.push_front(5);
+    dq.push_front(1);
+
+    /*
+    Current deque:
+    1 5 10 20
+    */
+
+    // emplace()
+
+    deque<int>::iterator inserted;
+
+    inserted = dq.emplace(dq.begin() + 2, 19);
+
+    /*
+    1 5 19 10 20
+    */
+
+    // insert()
+
+    dq.insert(inserted, 99);
+
+    /*
+    1 5 99 19 10 20
+    */
+
+    cout << "Deque elements: ";
+
+    display(dq);
+
+    /*
+    Output:
+    1 5 99 19 10 20
+    */
+
+    cout << endl;
+}
+
+// ================= READ FUNCTION =================
+
+void readDemo()
+{
+    cout << "================ READ =================\n"
+         << endl;
+
+    deque<int> dq;
+
+    dq.push_back(1);
+    dq.push_back(5);
+    dq.push_back(99);
+    dq.push_back(19);
+    dq.push_back(10);
+    dq.push_back(20);
+
+    // []
+
+    cout << "dq[1]: " << dq[1] << endl;
+
+    // at()
+
+    cout << "dq.at(2): " << dq.at(2) << endl;
+
+    // front()
+
+    cout << "dq.front(): " << dq.front() << endl;
+
+    // back()
+
+    cout << "dq.back(): " << dq.back() << endl;
+
+    // size()
+
+    cout << "dq.size(): " << dq.size() << endl;
+
+    // empty()
+
+    cout << "dq.empty(): " << dq.empty() << endl;
+
+    cout << endl;
+}
+
+// ================= ITERATOR FUNCTION =================
+
+void iteratorDemo()
+{
+    cout << "================ ITERATOR =================\n"
+         << endl;
+
+    deque<int> dq;
+
+    dq.push_back(10);
+    dq.push_back(20);
+    dq.push_back(30);
+    dq.push_back(40);
+
+    deque<int>::iterator it;
+
+    it = dq.begin();
+
+    cout << "First value: " << *it << endl;
+
+    ++it;
+
+    cout << "Second value: " << *it << endl;
+
+    it = it + 2;
+
+    cout << "Fourth value: " << *it << endl;
+
+    /*
+    Random access iterator:
+    ++it -> supported
+    --it -> supported
+    it+2 -> supported
+    it-2 -> supported
+    */
+
+    cout << endl;
+}
+
+// ================= UPDATE FUNCTION =================
+
+void updateDemo()
+{
+    cout << "================ UPDATE =================\n"
+         << endl;
+
+    deque<int> dq;
+
+    dq.push_back(1);
+    dq.push_back(5);
+    dq.push_back(10);
+    dq.push_back(20);
+
+    // update using []
+
+    dq[1] = 500;
+
+    // update using at()
+
+    dq.at(2) = 999;
+
+    cout << "After update: ";
+
+    display(dq);
+
+    /*
+    Output:
+    1 500 999 20
+    */
+
     cout << endl;
 
-    // ================= UPDATE =================
-    dq[1] = 500; // update value using index
-    dq.at(1) = 500;
-    cout << "After update: ";
-    for (int x : dq)
-    {
-        cout << x << " ";
-    } // Output: 1 500 10 20
-    cout << endl
-         << endl;
+    // insert()
 
-    // insert() inserts element at specific position
-    dq.insert(dq.begin() + 2, 99);
+    dq.insert(dq.begin() + 2, 100);
+
     cout << "After insert(): ";
-    for (int x : dq)
-    {
-        cout << x << " ";
-    } // Output: 1 500 99 10 20
-    cout << endl
+
+    display(dq);
+
+    /*
+    Output:
+    1 500 100 999 20
+    */
+
+    cout << endl;
+}
+
+// ================= DELETE FUNCTION =================
+
+void deleteDemo()
+{
+    cout << "================ DELETE =================\n"
          << endl;
 
-    // ================= DELETE =================
-    dq.pop_front(); // pop_front() removes first element
+    deque<int> dq;
+
+    dq.push_back(500);
+    dq.push_back(99);
+    dq.push_back(10);
+    dq.push_back(20);
+
+    // pop_front()
+
+    dq.pop_front();
+
     cout << "After pop_front(): ";
-    for (int x : dq)
-    {
-        cout << x << " ";
-    } // Output: 500 99 10 20
-    cout << endl
-         << endl;
-    dq.pop_back(); // pop_back() removes last element
+
+    display(dq);
+
+    /*
+    Output:
+    99 10 20
+    */
+
+    cout << endl;
+
+    // pop_back()
+
+    dq.pop_back();
+
     cout << "After pop_back(): ";
-    for (int x : dq)
-    {
-        cout << x << " ";
-    } // Output: 500 99 10
-    cout << endl
-         << endl;
-    dq.erase(dq.begin() + 1); // erase() removes element from specific position
+
+    display(dq);
+
+    /*
+    Output:
+    99 10
+    */
+
+    cout << endl;
+
+    // erase()
+
+    dq.erase(dq.begin());
+
     cout << "After erase(): ";
-    for (int x : dq)
-    {
-        cout << x << " ";
-    } // Output: 500 10
-    cout << endl
-         << endl;
-    dq.clear();                                   // clear() removes all elements
-    cout << "dq.empty(): " << dq.empty() << endl; // Output: dq.empty(): 1
+
+    display(dq);
+
+    /*
+    Output:
+    10
+    */
+
+    cout << endl;
+
+    // clear()
+
+    dq.clear();
+
+    cout << "After clear()" << endl;
+
+    cout << "dq.empty(): " << dq.empty() << endl;
+
+    /*
+    Output:
+    dq.empty(): 1
+    */
+
+    cout << endl;
+}
+
+// ================= MAIN FUNCTION =================
+
+int main()
+{
+    createDemo();
+
+    readDemo();
+
+    iteratorDemo();
+
+    updateDemo();
+
+    deleteDemo();
 
     return 0;
 }

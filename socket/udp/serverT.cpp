@@ -1,335 +1,432 @@
 /*
-============================================================
-UDP SERVER SOCKET FLOW
-============================================================
+================================================================
+MODULAR UDP SERVER
+================================================================
 
-socket()   -> create udp socket
-bind()     -> attach socket to ip:port
-recvfrom() -> receive datagram from client
-sendto()   -> send datagram to client
-close()    -> release socket
+OVERVIEW:
+----------------------------------------------------------------
+This program demonstrates complete UDP server-side socket
+programming using a clean modular design.
 
-------------------------------------------------------------
-IMPORTANT:
-- UDP = connectionless
-- no listen()
-- no accept()
-- data sent as packets(datagram)
-- faster but unreliable compared to TCP
-============================================================
+The server:
+----------------------------------------------------------------
+1. Creates UDP socket
+2. Binds socket to IP:PORT
+3. Waits for client datagram
+4. Receives packet from client
+5. Sends response packet to client
+6. Releases socket resources
+
+================================================================
+UDP SERVER COMMUNICATION FLOW
+================================================================
+
+    socket()
+        ↓
+    create UDP socket
+
+    bind()
+        ↓
+    attach socket to IP:PORT
+
+    recvfrom()
+        ↓
+    receive client datagram
+
+    sendto()
+        ↓
+    send reply datagram
+
+    close()/closesocket()
+        ↓
+    release socket resources
+
+================================================================
+IMPORTANT UDP CONCEPTS
+================================================================
+
+UDP:
+----------------------------------------------------------------
+- connectionless protocol
+- no TCP handshake
+- no connection establishment
+- no delivery guarantee
+- no packet ordering guarantee
+- low overhead and fast communication
+
+UDP DOES NOT USE:
+----------------------------------------------------------------
+- listen()
+- accept()
+- connect()
+
+DATAGRAM:
+----------------------------------------------------------------
+UDP data packet is called:
+    datagram
+
+Each packet contains:
+----------------------------------------------------------------
+- payload data
+- source address
+- destination address
+
+================================================================
+SOCKET DESCRIPTOR
+================================================================
+
+serverFd:
+----------------------------------------------------------------
+integer returned by socket()
+
+Used for:
+----------------------------------------------------------------
+- bind()
+- recvfrom()
+- sendto()
+- close()
+
+================================================================
+ADDRESSING INFORMATION
+================================================================
+
+IPv4 ADDRESS:
+----------------------------------------------------------------
+INADDR_ANY
+
+Meaning:
+    receive packets from all network interfaces
+
+PORT NUMBER:
+----------------------------------------------------------------
+Example:
+    9090
+
+Identifies:
+    specific UDP server process
+
+================================================================
+IMPORTANT NETWORK CONVERSIONS
+================================================================
+
+htons():
+----------------------------------------------------------------
+Host TO Network Short
+
+Converts:
+    host port number
+            ↓
+    network byte order (big-endian)
+
+inet_pton():
+----------------------------------------------------------------
+Presentation TO Network
+
+Converts:
+    readable IP string
+            ↓
+    binary IPv4 address
+
+================================================================
+PLATFORM SUPPORT
+================================================================
+
+WINDOWS:
+----------------------------------------------------------------
+Uses Winsock API
+
+Required:
+    WSAStartup()
+    WSACleanup()
+
+LINUX:
+----------------------------------------------------------------
+Uses POSIX socket API
+
+No special initialization required.
+
+================================================================
+EXAMPLE COMMUNICATION
+================================================================
+
+CLIENT:
+    "hello from udp client"
+
+SERVER:
+    "hello from udp server"
+
+================================================================
 */
 
-#include <iostream>
-#include <cstring>
+#include <iostream> // cout, cerr
+#include <string>   // std::string
+#include <cstring>  // strlen()
 
-#include <unistd.h>
-#include <winsock2.h> 
-#include <ws2tcpip.h> 
+#ifdef _WIN32
+
+#include <winsock2.h> // socket(), bind(), sendto(), recvfrom()
+#include <ws2tcpip.h> // sockaddr_in, inet_pton()
+
+#pragma comment(lib, "ws2_32.lib") // link Winsock library
+
+#define CLOSE_SOCKET closesocket // Windows socket close function
+
+#else
+
+#include <unistd.h> // close()
+#include <arpa/inet.h> // htons(), inet_pton()
+#include <sys/socket.h> // socket(), bind(), sendto(), recvfrom()
+
+#define CLOSE_SOCKET close // Linux socket close function
+
+#endif
+#include <cstdint> // provides fixed-size integers like uint16_t and uint32_t
 
 using namespace std;
 
-
-/**===========================================================
-1.int socket(int domain, int type, int protocol)
---------------------------------------------------------------
-create UDP socket
-===========================================================
-
-parameter:
-    domain:
-        AF_INET  -> IPv4
-        AF_INET6 -> IPv6
-
-    type:
-        SOCK_DGRAM -> UDP socket
-
-    protocol:
-        0 -> auto select protocol
-
-returns:
-    - socket fd on success
-    - -1 on failure
-===========================================================*/
-void explain_socket()
+/*===============================================================
+INITIALIZE WINSOCK
+---------------------------------------------------------------
+Required only on Windows before using sockets.
+===============================================================*/
+bool initializeWinsock()
 {
-    int serverFd = socket(AF_INET, SOCK_DGRAM, 0);
-    // create IPv4 UDP socket
+#ifdef _WIN32
 
-    if(serverFd == -1)
+    WSADATA wsa; // Winsock startup information
+
+    if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0) // initialize Winsock
     {
-        perror("socket failed");
+        cerr << "WSAStartup failed" << endl;
 
-        return;
+        return false;
     }
 
-    cout << "UDP socket created" << endl;
+#endif
 
-    close(serverFd);
+    return true;
 }
 
-
-/**===========================================================
-2.struct sockaddr_in
---------------------------------------------------------------
-stores ip + port information
-===========================================================
-
-important fields:
-    sin_family -> address family
-    sin_port   -> port number
-    sin_addr   -> ip address
-===========================================================*/
-void explain_sockaddr()
+/*===============================================================
+CREATE UDP SOCKET
+---------------------------------------------------------------
+Creates IPv4 UDP socket.
+===============================================================*/
+int createSocket()
 {
-    sockaddr_in serverAddr{};
+    int serverFd = socket(
+        AF_INET,      // IPv4 address family
+        SOCK_DGRAM,   // UDP socket type
+        0);           // auto-select UDP protocol
 
-    serverAddr.sin_family = AF_INET; // IPv4
-
-    serverAddr.sin_port = htons(9090); // port number
-
-    serverAddr.sin_addr.s_addr = INADDR_ANY;
-    // accept packets from any ip
-}
-
-
-/**===========================================================
-3.int bind(int sockfd, sockaddr *addr, socklen_t len)
---------------------------------------------------------------
-attach socket to ip:port
-===========================================================
-
-parameter:
-    sockfd -> socket fd
-    addr   -> address structure
-    len    -> structure size
-
-returns:
-    0  -> success
-    -1 -> failure
-===========================================================*/
-void explain_bind()
-{
-    int serverFd = socket(AF_INET, SOCK_DGRAM, 0);
-
-    sockaddr_in serverAddr{};
-
-    serverAddr.sin_family = AF_INET;
-    serverAddr.sin_port = htons(9090);
-    serverAddr.sin_addr.s_addr = INADDR_ANY;
-
-    int result = bind(
-        serverFd,
-        (sockaddr*)&serverAddr, // convert type
-        sizeof(serverAddr)
-    );
-
-    if(result == -1)
-    {
-        perror("bind failed");
-
-        close(serverFd);
-
-        return;
-    }
-
-    cout << "bind success" << endl;
-
-    close(serverFd);
-}
-
-
-/**===========================================================
-4.ssize_t recvfrom()
---------------------------------------------------------------
-receive datagram from client
-===========================================================
-
-syntax:
-    recvfrom(sockfd, buffer, size, flags,
-             sockaddr*, socklen_t*)
-
-returns:
-    >0 -> bytes received
-    -1 -> failure
-
-IMPORTANT:
-    - no connection required
-    - client address also received
-===========================================================*/
-void explain_recvfrom()
-{
-    int serverFd = socket(AF_INET, SOCK_DGRAM, 0);
-
-    char buffer[1024];
-
-    sockaddr_in clientAddr{};
-    socklen_t clientLen = sizeof(clientAddr);
-
-    ssize_t bytes = recvfrom(
-        serverFd,
-        buffer,
-        sizeof(buffer)-1, // leave space for '\0'
-        0,
-        (sockaddr*)&clientAddr, // store client info
-        &clientLen
-    );
-
-    if(bytes > 0)
-    {
-        buffer[bytes] = '\0';
-
-        cout << "received: " << buffer << endl;
-    }
-
-    close(serverFd);
-}
-
-
-/**===========================================================
-5.ssize_t sendto()
---------------------------------------------------------------
-send datagram to client
-===========================================================
-
-syntax:
-    sendto(sockfd, data, size, flags,
-           sockaddr*, socklen_t)
-
-returns:
-    - bytes sent
-    - -1 on failure
-===========================================================*/
-void explain_sendto()
-{
-    int serverFd = socket(AF_INET, SOCK_DGRAM, 0);
-
-    sockaddr_in clientAddr{};
-
-    clientAddr.sin_family = AF_INET;
-    clientAddr.sin_port = htons(9090);
-
-    inet_pton(
-        AF_INET,
-        "127.0.0.1", // localhost ip
-        &clientAddr.sin_addr
-    );
-
-    const char *msg = "hello udp client";
-
-    sendto(
-        serverFd,
-        msg,
-        strlen(msg), // send exact bytes
-        0,
-        (sockaddr*)&clientAddr,
-        sizeof(clientAddr)
-    );
-
-    close(serverFd);
-}
-
-
-/**===========================================================
-6.COMPLETE UDP SERVER
---------------------------------------------------------------
-minimal working udp server
-===========================================================*/
-void udp_server()
-{
-    // create UDP socket
-    int serverFd = socket(AF_INET, SOCK_DGRAM, 0);
-
-    if(serverFd == -1)
+    if (serverFd == -1) // socket creation failure
     {
         perror("socket");
 
-        return;
+        return -1;
     }
 
+    cout << "[OK] UDP socket created" << endl;
 
-    sockaddr_in serverAddr{};
+    return serverFd; // return socket descriptor
+}
 
-    serverAddr.sin_family = AF_INET; // IPv4
+/*===============================================================
+CREATE SERVER ADDRESS
+---------------------------------------------------------------
+Creates IPv4 server address structure.
+===============================================================*/
+sockaddr_in createServerAddress(uint16_t port)
+{
+    sockaddr_in serverAddr{}; // IPv4 server address structure
 
-    serverAddr.sin_port = htons(9090); // server port
+    serverAddr.sin_family = AF_INET; // IPv4 addressing
 
-    serverAddr.sin_addr.s_addr = INADDR_ANY;
-    // receive from any network interface
+    serverAddr.sin_port = htons(port); // host -> network byte order
 
+    serverAddr.sin_addr.s_addr = INADDR_ANY; // receive from any network interface
 
-    // bind socket with ip:port
-    if(bind(serverFd,
-            (sockaddr*)&serverAddr,
-            sizeof(serverAddr)) == -1)
+    return serverAddr; // return configured server address
+}
+
+/*===============================================================
+BIND SOCKET
+---------------------------------------------------------------
+Attaches socket to server IP:PORT.
+===============================================================*/
+bool bindSocket(
+    int serverFd,
+    sockaddr_in &serverAddr)
+{
+    int result = bind(
+        serverFd,                  // UDP socket descriptor
+        (sockaddr *)&serverAddr,   // server address structure
+        sizeof(serverAddr));       // structure size
+
+    if (result == -1) // bind failure
     {
         perror("bind");
 
-        close(serverFd);
-
-        return;
+        return false;
     }
 
-    cout << "UDP server waiting..." << endl;
+    cout << "[OK] bind success" << endl;
 
+    return true;
+}
 
-    char buffer[1024];
+/*===============================================================
+RECEIVE UDP DATAGRAM
+---------------------------------------------------------------
+recvfrom() receives packet from client.
+===============================================================*/
+string receiveMessage(
+    int serverFd,
+    sockaddr_in &clientAddr,
+    socklen_t &clientLen)
+{
+    char buffer[1024]; // receive buffer
 
-    sockaddr_in clientAddr{};
-    socklen_t clientLen = sizeof(clientAddr);
-
-
-    // receive packet from client
     ssize_t bytes = recvfrom(
-        serverFd,
-        buffer,
-        sizeof(buffer)-1,
-        0,
-        (sockaddr*)&clientAddr, // store client info
-        &clientLen
-    );
+        serverFd,                   // UDP server socket
+        buffer,                     // receive buffer
+        sizeof(buffer) - 1,         // leave space for '\0'
+        0,                          // normal blocking receive
+        (sockaddr *)&clientAddr,    // stores sender address
+        &clientLen);                // sender address size
 
-    if(bytes == -1)
+    if (bytes <= 0) // receive failure
     {
         perror("recvfrom");
 
-        close(serverFd);
+        return "";
+    }
+
+    buffer[bytes] = '\0'; // manually terminate C-string
+
+    return string(buffer); // convert char[] -> string
+}
+
+/*===============================================================
+SEND UDP DATAGRAM
+---------------------------------------------------------------
+sendto() sends reply packet to client.
+===============================================================*/
+bool sendMessage(
+    int serverFd,
+    const string &message,
+    sockaddr_in &clientAddr,
+    socklen_t clientLen)
+{
+    ssize_t sentBytes = sendto(
+        serverFd,                   // UDP server socket
+        message.c_str(),            // message bytes
+        message.size(),             // number of bytes to send
+        0,                          // normal send mode
+        (sockaddr *)&clientAddr,    // destination client address
+        clientLen);                 // destination structure size
+
+    if (sentBytes == -1) // send failure
+    {
+        perror("sendto");
+
+        return false;
+    }
+
+    cout << "[OK] reply sent" << endl;
+
+    return true;
+}
+
+/*===============================================================
+CLOSE SOCKET
+===============================================================*/
+void closeSocket(int serverFd)
+{
+    CLOSE_SOCKET(serverFd); // release UDP socket descriptor
+
+    cout << "[OK] server socket closed" << endl;
+}
+
+/*===============================================================
+CLEANUP WINSOCK
+===============================================================*/
+void cleanupWinsock()
+{
+#ifdef _WIN32
+
+    WSACleanup(); // release Winsock resources
+
+#endif
+}
+
+/*===============================================================
+UDP SERVER
+---------------------------------------------------------------
+Complete UDP server workflow.
+===============================================================*/
+void udpServer()
+{
+    if (!initializeWinsock()) // initialize networking library
+    {
+        return;
+    }
+
+    int serverFd = createSocket(); // create UDP socket
+
+    if (serverFd == -1)
+    {
+        cleanupWinsock();
 
         return;
     }
 
+    sockaddr_in serverAddr =
+        createServerAddress(9090); // configure UDP server address
 
-    buffer[bytes] = '\0';
+    if (!bindSocket(serverFd, serverAddr)) // bind socket to port
+    {
+        closeSocket(serverFd);
 
-    cout << "client: " << buffer << endl;
+        cleanupWinsock();
 
+        return;
+    }
 
-    // reply message
-    const char *reply = "hello from udp server";
+    cout << "\nUDP server waiting...\n" << endl;
 
+    sockaddr_in clientAddr{}; // stores client address information
 
-    // send packet back to client
-    sendto(
+    socklen_t clientLen = sizeof(clientAddr); // client structure size
+
+    string clientMessage =
+        receiveMessage(
+            serverFd,
+            clientAddr,
+            clientLen); // receive client datagram
+
+    if (!clientMessage.empty())
+    {
+        cout << "client: " << clientMessage << endl;
+    }
+
+    sendMessage(
         serverFd,
-        reply,
-        strlen(reply),
-        0,
-        (sockaddr*)&clientAddr,
-        clientLen
-    );
+        "hello from udp server",
+        clientAddr,
+        clientLen); // send reply datagram
 
-    cout << "reply sent" << endl;
+    closeSocket(serverFd); // release socket resources
 
-
-    close(serverFd); // release socket
+    cleanupWinsock(); // cleanup networking library
 }
 
-
-/**===========================================================
-main()
-===========================================================*/
+/*===============================================================
+MAIN
+===============================================================*/
 int main()
 {
-    udp_server();
+    udpServer(); // start UDP server
 
     return 0;
 }

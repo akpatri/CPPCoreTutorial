@@ -1,347 +1,423 @@
 /*
-============================================================
-TCP CLIENT SOCKET FLOW
-============================================================
+================================================================
+MODULAR TCP CLIENT
+================================================================
 
-socket()   -> create tcp socket
-connect()  -> connect to server
-send()     -> send data
-recv()     -> receive data
-shutdown() -> stop communication
-close()    -> release socket
+OVERVIEW:
+----------------------------------------------------------------
+This program demonstrates complete TCP client-side socket
+programming using a clean modular design.
 
-------------------------------------------------------------
-IMPORTANT:
-- TCP = connection oriented
-- client must connect before send/recv
-- server ip + port required
-============================================================
+The client:
+----------------------------------------------------------------
+1. Creates TCP socket
+2. Connects to remote TCP server
+3. Sends message to server
+4. Receives server response
+5. Gracefully terminates connection
+6. Releases socket resources
+
+================================================================
+TCP CLIENT COMMUNICATION FLOW
+================================================================
+
+    socket()
+        ↓
+    create TCP client socket
+
+    connect()
+        ↓
+    establish TCP connection with server
+
+    send()
+        ↓
+    transmit data to server
+
+    recv()
+        ↓
+    receive response from server
+
+    shutdown()
+        ↓
+    disable send/receive communication
+
+    close()/closesocket()
+        ↓
+    release socket descriptor and OS resources
+
+================================================================
+IMPORTANT TCP CONCEPTS
+================================================================
+
+TCP:
+----------------------------------------------------------------
+- connection-oriented protocol
+- reliable communication
+- ordered packet delivery
+- error checking and retransmission
+- full duplex communication
+
+CLIENT REQUIREMENTS:
+----------------------------------------------------------------
+- server IP address required
+- server port required
+- successful connect() required before send()/recv()
+
+SOCKET DESCRIPTOR:
+----------------------------------------------------------------
+clientFd:
+    integer returned by socket()
+
+Used for:
+----------------------------------------------------------------
+- connect()
+- send()
+- recv()
+- shutdown()
+- close()
+
+================================================================
+ADDRESSING INFORMATION
+================================================================
+
+IPv4 ADDRESS:
+----------------------------------------------------------------
+Example:
+    127.0.0.1
+
+Meaning:
+    localhost / same machine
+
+PORT NUMBER:
+----------------------------------------------------------------
+Example:
+    8080
+
+Used to identify:
+    specific server application/process
+
+================================================================
+IMPORTANT NETWORK CONVERSIONS
+================================================================
+
+htons():
+----------------------------------------------------------------
+Host TO Network Short
+
+Converts:
+    CPU-native port number
+            ↓
+    network byte order (big-endian)
+
+inet_pton():
+----------------------------------------------------------------
+Presentation TO Network
+
+Converts:
+    readable IP string
+            ↓
+    binary IPv4 address
+
+================================================================
+PLATFORM SUPPORT
+================================================================
+
+WINDOWS:
+----------------------------------------------------------------
+Uses:
+    Winsock API
+
+Required:
+    WSAStartup()
+    WSACleanup()
+
+LINUX:
+----------------------------------------------------------------
+Uses:
+    POSIX socket API
+
+No special initialization required.
+
+================================================================
+EXAMPLE COMMUNICATION
+================================================================
+
+CLIENT:
+    "hello from tcp client"
+
+SERVER:
+    "hello from server"
+
+================================================================
 */
 
-#include <iostream>
-#include <cstring>
+#include <iostream> // cout, cerr
+#include <string>   // std::string
+#include <cstring>  // strlen()
 
-#include <unistd.h>
-#include <winsock2.h>  //#include <arpa/inet.h>
-#include <ws2tcpip.h>  //#include <sys/socket.h>
+#ifdef _WIN32
+
+#include <winsock2.h> // socket(), connect(), send(), recv()
+#include <ws2tcpip.h> // inet_pton(), sockaddr_in
+
+#pragma comment(lib, "ws2_32.lib") // link Winsock library
+
+#define CLOSE_SOCKET closesocket // Windows socket close function
+
+#else
+
+#include <unistd.h> // close()
+#include <arpa/inet.h> // htons(), inet_pton()
+#include <sys/socket.h> // socket(), connect(), send(), recv()
+
+#define CLOSE_SOCKET close // Linux socket close function
+
+#endif
+#include <cstdint> // provides fixed-size integers like uint16_t and uint32_t
+
 
 using namespace std;
 
-
-/**===========================================================
-1.int socket(int domain, int type, int protocol)
---------------------------------------------------------------
-create TCP socket
-===========================================================
-
-parameter:
-    domain:
-        AF_INET  -> IPv4
-        AF_INET6 -> IPv6
-
-    type:
-        SOCK_STREAM -> TCP socket
-
-    protocol:
-        0 -> auto select protocol
-
-returns:
-    - socket fd on success
-    - -1 on failure
-===========================================================*/
-void explain_socket()
+/*===============================================================
+INITIALIZE WINSOCK
+---------------------------------------------------------------
+Required only on Windows before using sockets.
+===============================================================*/
+bool initializeWinsock()
 {
-    int clientFd = socket(AF_INET, SOCK_STREAM, 0);
-    // create IPv4 TCP socket
+#ifdef _WIN32
 
-    if(clientFd == -1)
+    WSADATA wsa; // Winsock startup information
+
+    if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0) // initialize Winsock library
     {
-        perror("socket failed");
+        cerr << "WSAStartup failed" << endl;
 
-        return;
+        return false;
     }
 
-    cout << "TCP socket created" << endl;
+#endif
 
-    close(clientFd);
+    return true;
 }
 
-
-/**===========================================================
-2.struct sockaddr_in
---------------------------------------------------------------
-stores server ip + port
-===========================================================
-
-important fields:
-    sin_family -> address family
-    sin_port   -> port number
-    sin_addr   -> ip address
-===========================================================*/
-void explain_sockaddr()
+/*===============================================================
+CREATE TCP SOCKET
+---------------------------------------------------------------
+Creates IPv4 TCP client socket.
+===============================================================*/
+int createSocket()
 {
-    sockaddr_in serverAddr{};
+    int clientFd = socket(
+        AF_INET,      // IPv4 address family
+        SOCK_STREAM,  // TCP socket
+        0);           // auto-select TCP protocol
 
-    serverAddr.sin_family = AF_INET; // IPv4
-
-    serverAddr.sin_port = htons(8080); // server port
-
-
-    inet_pton(
-        AF_INET,
-        "127.0.0.1", // localhost ip
-        &serverAddr.sin_addr
-    );
-}
-
-
-/**===========================================================
-3.int connect(int sockfd, sockaddr *addr, socklen_t len)
---------------------------------------------------------------
-connect client to server
-===========================================================
-
-parameter:
-    sockfd -> client socket fd
-    addr   -> server address
-    len    -> structure size
-
-returns:
-    0  -> success
-    -1 -> failure
-===========================================================*/
-void explain_connect()
-{
-    int clientFd = socket(AF_INET, SOCK_STREAM, 0);
-
-    sockaddr_in serverAddr{};
-
-    serverAddr.sin_family = AF_INET;
-
-    serverAddr.sin_port = htons(8080);
-
-
-    inet_pton(
-        AF_INET,
-        "127.0.0.1",
-        &serverAddr.sin_addr
-    );
-
-
-    int result = connect(
-        clientFd,
-        (sockaddr*)&serverAddr, // server info
-        sizeof(serverAddr)
-    );
-
-    if(result == -1)
-    {
-        perror("connect failed");
-
-        close(clientFd);
-
-        return;
-    }
-
-    cout << "connected to server" << endl;
-
-    close(clientFd);
-}
-
-
-/**===========================================================
-4.ssize_t send()
---------------------------------------------------------------
-send data to server
-===========================================================
-
-syntax:
-    send(sockfd, data, size, flags)
-
-returns:
-    - bytes sent
-    - -1 on failure
-===========================================================*/
-void explain_send()
-{
-    int clientFd = socket(AF_INET, SOCK_STREAM, 0);
-
-    const char *msg = "hello server";
-
-    send(
-        clientFd,
-        msg,
-        strlen(msg), // send exact bytes
-        0
-    );
-
-    close(clientFd);
-}
-
-
-/**===========================================================
-5.ssize_t recv()
---------------------------------------------------------------
-receive data from server
-===========================================================
-
-syntax:
-    recv(sockfd, buffer, size, flags)
-
-returns:
-    >0 -> bytes received
-    0  -> server disconnected
-    -1 -> failure
-===========================================================*/
-void explain_recv()
-{
-    int clientFd = socket(AF_INET, SOCK_STREAM, 0);
-
-    char buffer[1024];
-
-    ssize_t bytes = recv(
-        clientFd,
-        buffer,
-        sizeof(buffer)-1,
-        0
-    );
-
-    if(bytes > 0)
-    {
-        buffer[bytes] = '\0';
-
-        cout << "server: " << buffer << endl;
-    }
-
-    close(clientFd);
-}
-
-
-/**===========================================================
-6.int shutdown(int sockfd, int how)
---------------------------------------------------------------
-disable communication
-===========================================================
-
-parameter:
-    parameter:
-    SHUT_RD   -> stop reading
-    SHUT_WR   -> stop writing
-    SHUT_RDWR -> stop both
-    for windows:
-    SD_RECEIVE  // like SHUT_RD
-    SD_SEND     // like SHUT_WR
-    SD_BOTH     // like SHUT_RDWR
-===========================================================*/
-void explain_shutdown()
-{
-    int clientFd = socket(AF_INET, SOCK_STREAM, 0);
-
-    shutdown(clientFd,SD_BOTH);
-
-    close(clientFd);
-}
-
-
-/**===========================================================
-7.COMPLETE TCP CLIENT
---------------------------------------------------------------
-minimal working tcp client
-===========================================================*/
-void tcp_client()
-{
-    // create TCP socket
-    int clientFd = socket(AF_INET, SOCK_STREAM, 0);
-
-    if(clientFd == -1)
+    if (clientFd == -1) // socket creation failure
     {
         perror("socket");
 
-        return;
+        return -1;
     }
 
+    cout << "[OK] TCP socket created" << endl;
 
-    sockaddr_in serverAddr{};
+    return clientFd; // return socket descriptor
+}
+
+/*===============================================================
+CREATE SERVER ADDRESS
+---------------------------------------------------------------
+Creates IPv4 server address structure.
+===============================================================*/
+sockaddr_in createServerAddress(
+    const string &ip,
+    uint16_t port)
+{
+    sockaddr_in serverAddr{}; // server address structure
 
     serverAddr.sin_family = AF_INET; // IPv4
 
-    serverAddr.sin_port = htons(8080); // server port
-
+    serverAddr.sin_port = htons(port); // host -> network byte order
 
     inet_pton(
-        AF_INET,
-        "127.0.0.1", // localhost server ip
-        &serverAddr.sin_addr
-    );
+        AF_INET,                  // IPv4 conversion
+        ip.c_str(),               // readable IP string
+        &serverAddr.sin_addr);    // binary IPv4 destination
 
+    return serverAddr; // return configured server address
+}
 
-    // connect with server
-    if(connect(clientFd,
-               (sockaddr*)&serverAddr,
-               sizeof(serverAddr)) == -1)
+/*===============================================================
+CONNECT TO SERVER
+---------------------------------------------------------------
+Establishes TCP connection with server.
+===============================================================*/
+bool connectToServer(
+    int clientFd,
+    sockaddr_in &serverAddr)
+{
+    int result = connect(
+        clientFd,                  // client socket descriptor
+        (sockaddr *)&serverAddr,  // server address information
+        sizeof(serverAddr));      // structure size
+
+    if (result == -1) // connection failure
     {
         perror("connect");
 
-        close(clientFd);
-
-        return;
+        return false;
     }
 
-    cout << "connected to server" << endl;
+    cout << "[OK] connected to server" << endl;
 
+    return true;
+}
 
-    // message for server
-    const char *msg = "hello from tcp client";
+/*===============================================================
+SEND MESSAGE
+---------------------------------------------------------------
+Transmits data to connected server.
+===============================================================*/
+bool writeMessage(
+    int clientFd,
+    const string &message)
+{
+    ssize_t sentBytes = send(
+        clientFd,               // connected client socket
+        message.c_str(),        // convert string -> const char*
+        message.size(),         // number of bytes to send
+        0);                     // normal blocking send
 
+    if (sentBytes == -1) // send failure
+    {
+        perror("send");
 
-    // send data to server
-    send(
-        clientFd,
-        msg,
-        strlen(msg),
-        0
-    );
+        return false;
+    }
 
+    return true;
+}
 
-    char buffer[1024];
+/*===============================================================
+RECEIVE MESSAGE
+---------------------------------------------------------------
+Receives server response.
+===============================================================*/
+string readMessage(int clientFd)
+{
+    char buffer[1024]; // receive buffer
 
-
-    // receive reply from server
     ssize_t bytes = recv(
-        clientFd,
-        buffer,
-        sizeof(buffer)-1,
-        0
-    );
+        clientFd,              // connected socket
+        buffer,                // receive buffer
+        sizeof(buffer) - 1,   // leave space for '\0'
+        0);                    // normal blocking receive
 
-    if(bytes == -1)
+    if (bytes <= 0) // recv failure or disconnect
     {
         perror("recv");
 
-        close(clientFd);
+        return "";
+    }
+
+    buffer[bytes] = '\0'; // manually terminate C-string
+
+    return string(buffer); // convert char[] -> string
+}
+
+/*===============================================================
+SHUTDOWN CONNECTION
+---------------------------------------------------------------
+Gracefully stops socket communication.
+===============================================================*/
+void shutdownConnection(int clientFd)
+{
+#ifdef _WIN32
+
+    shutdown(clientFd, SD_BOTH); // disable send + receive
+
+#else
+
+    shutdown(clientFd, SHUT_RDWR); // disable send + receive
+
+#endif
+
+    CLOSE_SOCKET(clientFd); // release socket descriptor
+
+    cout << "[OK] connection closed" << endl;
+}
+
+/*===============================================================
+CLEANUP WINSOCK
+===============================================================*/
+void cleanupWinsock()
+{
+#ifdef _WIN32
+
+    WSACleanup(); // release Winsock resources
+
+#endif
+}
+
+/*===============================================================
+TCP CLIENT
+---------------------------------------------------------------
+Complete TCP client workflow.
+===============================================================*/
+void tcpClient()
+{
+    if (!initializeWinsock()) // initialize networking library
+    {
+        return;
+    }
+
+    int clientFd = createSocket(); // create TCP socket
+
+    if (clientFd == -1)
+    {
+        cleanupWinsock();
 
         return;
     }
 
+    sockaddr_in serverAddr =
+        createServerAddress(
+            "127.0.0.1", // localhost server IP
+            8080);       // server port
 
-    buffer[bytes] = '\0';
+    if (!connectToServer(clientFd, serverAddr)) // establish connection
+    {
+        shutdownConnection(clientFd);
 
-    cout << "server: " << buffer << endl;
+        cleanupWinsock();
 
+        return;
+    }
 
-    // stop communication
-    shutdown(clientFd, SD_BOTH);
+    writeMessage(
+        clientFd,
+        "hello from tcp client"); // send message to server
 
-    close(clientFd); // release socket
+    string serverReply =
+        readMessage(clientFd); // receive server response
+
+    if (!serverReply.empty())
+    {
+        cout << "server: " << serverReply << endl;
+    }
+
+    shutdownConnection(clientFd); // terminate communication
+
+    cleanupWinsock(); // cleanup networking library
 }
 
-
-/**===========================================================
-main()
-===========================================================*/
+/*===============================================================
+MAIN
+===============================================================*/
 int main()
 {
-    tcp_client();
+    tcpClient(); // start TCP client
 
     return 0;
 }

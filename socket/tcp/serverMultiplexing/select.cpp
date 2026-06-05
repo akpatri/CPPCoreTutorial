@@ -1,93 +1,336 @@
 ﻿/*
 TCP SERVER USING select()
 
+Overview:
+----------------------------------------------------------------
+This program implements a multi-client TCP server using the
+select() I/O multiplexing mechanism.
+
+Instead of creating one thread per client, the server uses a
+single thread and a single event loop to monitor multiple
+sockets simultaneously.
+
+The select() system call blocks until one or more monitored
+sockets become ready for I/O operations. This allows the
+server to efficiently handle multiple client connections
+without constantly polling every socket.
+
+The server maintains a master set of active sockets and
+continuously waits for connection requests, incoming data,
+and client disconnections.
+
+Core Responsibilities:
+----------------------------------------------------------------
+1. Create a TCP server socket.
+2. Bind the socket to an IP address and port.
+3. Put the socket into listening mode.
+4. Initialize and maintain fd_set structures.
+5. Register the listening socket with select().
+6. Wait for socket activity using select().
+7. Accept new client connections.
+8. Add connected clients to the monitored socket set.
+9. Receive messages from connected clients.
+10. Send responses back to clients.
+11. Detect client disconnects.
+12. Remove disconnected clients from monitoring.
+13. Release socket and networking resources.
+
 Functions:
 ----------------------------------------------------------------
-createSocket()
-    Creates IPv4 TCP socket.
+initializeWinsock()
+    Initializes Winsock networking library on Windows.
+    Required before any socket operations on Windows.
+    No-op on Linux.
     return:
-        int -> socket fd
+        true  -> success
+        false -> failure
+
+createSocket()
+    Creates an IPv4 TCP socket.
+
+    Internally calls:
+        socket(AF_INET, SOCK_STREAM, 0)
+
+    return:
+        int -> socket descriptor
         -1  -> failure
 
+createServerAddress(int port)
+    Creates and configures a sockaddr_in structure.
+
+    Configures:
+        - IPv4 address family
+        - listening port
+        - INADDR_ANY address
+
+    return:
+        sockaddr_in
+
 bindSocket(int serverFd, sockaddr_in& addr)
-    Binds socket to IP:PORT.
-    params:
-        serverFd -> listening socket
-        addr     -> server address
+    Attaches the server socket to a specific IP address
+    and port.
+
+    Internally calls:
+        bind()
+
     return:
         true  -> success
         false -> failure
 
 startListening(int serverFd, int backlog)
-    Puts socket into passive mode.
+    Places the socket into passive listening mode.
+
+    The socket begins accepting connection requests
+    from clients.
+
+    Internally calls:
+        listen()
+
     return:
-        true/false
+        true  -> success
+        false -> failure
+
+acceptClient(int serverFd, fd_set& masterSet, int& maxFd)
+    Accepts a pending client connection.
+
+    Creates a new communication socket that is used
+    exclusively for interaction with the connected client.
+
+    Adds the new client socket to:
+        - masterSet
+        - select() monitoring list
+
+    Updates:
+        maxFd
+
+    Internally calls:
+        accept()
+
+handleClientMessage(int clientFd, fd_set& masterSet)
+    Processes activity detected on a client socket.
+
+    Handles:
+        - receiving messages
+        - sending responses
+        - client disconnects
+        - socket cleanup
+
+    Removes disconnected clients from masterSet.
+
+readMessage(int clientFd)
+    Receives bytes from a connected client.
+
+    Internally calls:
+        recv()
+
+    return:
+        string -> received message
+        ""     -> disconnect/error
+
+writeMessage(int clientFd, const string& msg)
+    Sends data to a connected client.
+
+    Internally calls:
+        send()
+
+    return:
+        true  -> success
+        false -> failure
+
+shutdownConnection(int fd)
+    Gracefully terminates a connection.
+
+    Performs:
+        shutdown()
+        close()/closesocket()
+
+closeServer(int serverFd)
+    Releases server resources.
+
+    Performs:
+        close()/closesocket()
+        WSACleanup() (Windows)
 
 runSelectLoop(int serverFd)
-    Monitors multiple sockets using select().
+    Main event-processing loop.
+
+    Creates:
+        masterSet
+        readSet
+
+    Performs:
+        FD_ZERO()
+        FD_SET()
+        select()
+
     Handles:
         - new client connections
         - incoming messages
         - client disconnects
+        - socket cleanup
 
-readMessage(int clientFd)
-    Receives data from client.
-    return:
-        string message
+tcpServer()
+    Coordinates complete server startup and shutdown.
 
-writeMessage(int clientFd, const string& msg)
-    Sends data to client.
-    return:
-        true/false
+    Handles:
+        socket creation
+        bind
+        listen
+        select loop
+        cleanup
 
-shutdownConnection(int fd)
-    shutdown() + close()
+main()
+    Program entry point.
 
-Flow:
+    Starts the TCP server.
+
+Execution Flow:
 ----------------------------------------------------------------
-socket()
- ↓
+initializeWinsock()
+        ↓
+createSocket()
+        ↓
+createServerAddress()
+        ↓
 bind()
- ↓
+        ↓
 listen()
- ↓
-FD_ZERO()
- ↓
+        ↓
+FD_ZERO(masterSet)
+        ↓
 FD_SET(serverFd)
- ↓
+        ↓
+while(true)
+        ↓
+readSet = masterSet
+        ↓
 select()
- ├── new connection → accept()
- └── client data    → recv()
-                       ↓
-                     send()
-                       ↓
-                  close client
+        ↓
+ ┌─────────────────────────────┐
+ │ Ready Socket Detected       │
+ └─────────────────────────────┘
+        ↓
+   fd == serverFd ?
+        │
+   ┌────┴────┐
+   │         │
+  YES       NO
+   │         │
+accept()   recv()
+   │         │
+FD_SET()  message.empty() ?
+   │         │
+update    ┌───┴────┐
+ maxFd    │        │
+   │      NO      YES
+   │       │        │
+   │    send()   FD_CLR()
+   │       │        │
+   │       │   shutdown()
+   │       │        │
+   │       │     close()
+   │
+   └───────────────────┘
+
+Key Data Structures:
+----------------------------------------------------------------
+fd_set masterSet
+    Stores every socket currently being monitored.
+
+    Includes:
+        - listening socket
+        - all connected client sockets
+
+fd_set readSet
+    Temporary working copy passed to select().
+
+    select() modifies this set to indicate which
+    sockets are ready.
+
+maxFd
+    Highest numbered file descriptor currently
+    stored in masterSet.
+
+    select() scans descriptors from:
+        0 → maxFd
+
+Key System Calls Used:
+----------------------------------------------------------------
+socket()      -> create TCP socket
+bind()        -> attach socket to address
+listen()      -> enable connection queue
+accept()      -> accept client connection
+recv()        -> receive client data
+send()        -> send response
+shutdown()    -> stop communication
+close()       -> release socket descriptor
+
+select()      -> wait for socket activity
+
+FD_ZERO()     -> clear descriptor set
+FD_SET()      -> add descriptor to set
+FD_CLR()      -> remove descriptor from set
+FD_ISSET()    -> test descriptor readiness
+
+Advantages of select():
+----------------------------------------------------------------
+- Simple and easy to understand
+- Portable across Unix/Linux and Windows
+- Allows a single thread to handle multiple clients
+- Eliminates need for one thread per connection
+- Useful for learning event-driven networking
+- Widely supported across operating systems
+
+Limitations of select():
+----------------------------------------------------------------
+- Scans all descriptors from 0 to maxFd
+- Performance decreases as connection count grows
+- Limited by FD_SETSIZE
+- Less scalable than epoll() on Linux
+- Less efficient for thousands of concurrent clients
+
+Comparison:
+----------------------------------------------------------------
+select()
+    - Simpler
+    - Portable
+    - Suitable for small/medium workloads
+
+epoll()
+    - Linux-specific
+    - More scalable
+    - Better for high-concurrency servers
+    - Reports only active sockets
+
+This implementation demonstrates the fundamental
+event-driven networking model and serves as a foundation
+for understanding poll(), epoll(), kqueue(), and IOCP.
 */
 
-#include <iostream>
-#include <cstring>
+#include <iostream> // cout, cerr, endl
+#include <cstring>  // C-style string utilities
 
-#ifdef _WIN32
+#ifdef _WIN32 // compile Windows-specific code
 
-#include <winsock2.h>
-#include <ws2tcpip.h>
+#include <winsock2.h> // Windows socket API
+#include <ws2tcpip.h> // sockaddr_in, inet functions
 
-#pragma comment(lib, "ws2_32.lib")
+#pragma comment(lib, "ws2_32.lib") // link Winsock library automatically
 
-#define CLOSE_SOCKET closesocket
+#define CLOSE_SOCKET closesocket // Windows socket close function
 
-#else
+#else // compile Linux/Unix-specific code
 
-#include <unistd.h>
-#include <arpa/inet.h>
-#include <sys/socket.h>
-#include <sys/select.h>
+#include <unistd.h>     // close()
+#include <arpa/inet.h>  // sockaddr_in, htons(), INADDR_ANY
+#include <sys/socket.h> // socket(), bind(), listen(), accept(), recv(), send()
+#include <sys/select.h> // select(), fd_set, FD_SET(), FD_CLR(), FD_ISSET()
 
-#define CLOSE_SOCKET close
+#define CLOSE_SOCKET close // Linux socket close function
 
 #endif
 
-using namespace std;
+using namespace std; // avoid std:: prefix
 
 /*===========================================================
 WINDOWS SOCKET STARTUP
@@ -446,7 +689,7 @@ void closeServer(int serverFd)
 // Handles activity detected by select() on a client socket.
 void handleClientMessage(
     int clientFd,      // connected client used for recv() and send()
-    fd_set& masterSet) // master set used by select()
+    fd_set &masterSet) // master set used by select()
 {
     string message =
         readMessage(clientFd); // read client data using recv()
@@ -515,7 +758,7 @@ void tcpServer()
         closeServer(
             serverFd); // release socket before exiting
 
-            return; // listen() failed
+        return; // listen() failed
     }
 
     cout

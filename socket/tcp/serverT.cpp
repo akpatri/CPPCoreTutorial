@@ -115,29 +115,29 @@ FUTURE IMPROVEMENTS
 ====================================================================
 */
 
-#include <iostream>
-#include <cstring>
+#include <iostream> // cout, cerr, endl
+#include <cstring>  // C-style string utilities
 
-#ifdef _WIN32
+#ifdef _WIN32 // compile Windows-specific code
 
-#include <winsock2.h>
-#include <ws2tcpip.h>
+#include <winsock2.h> // Windows socket API
+#include <ws2tcpip.h> // sockaddr_in, inet functions
 
-#pragma comment(lib, "ws2_32.lib")
+#pragma comment(lib, "ws2_32.lib") // link Winsock library automatically
 
-#define CLOSE_SOCKET closesocket
+#define CLOSE_SOCKET closesocket // Windows socket close function
 
-#else
+#else // compile Linux/Unix-specific code
 
-#include <unistd.h>
-#include <arpa/inet.h>
-#include <sys/socket.h>
+#include <unistd.h>     // close()
+#include <arpa/inet.h>  // sockaddr_in, htons(), INADDR_ANY
+#include <sys/socket.h> // socket(), bind(), listen(), accept(), recv(), send()
 
-#define CLOSE_SOCKET close
+#define CLOSE_SOCKET close // Linux socket close function
 
 #endif
 
-using namespace std;
+using namespace std; // avoid std:: prefix
 
 /*===========================================================
 WINDOWS SOCKET STARTUP
@@ -429,10 +429,10 @@ void printDiagnosticInfo(int clientFd, sockaddr_in &clientAddr)
     char clientIp[INET_ADDRSTRLEN]; // buffer to store readable IPv4 string like "192.168.1.10"
 
     inet_ntop(
-        AF_INET,                    // convert IPv4 binary address to readable text format
-        &clientAddr.sin_addr,      // client IPv4 address stored by accept()
-        clientIp,                  // destination buffer for converted IP string
-        sizeof(clientIp));         // maximum writable buffer size
+        AF_INET,              // convert IPv4 binary address to readable text format
+        &clientAddr.sin_addr, // client IPv4 address stored by accept()
+        clientIp,             // destination buffer for converted IP string
+        sizeof(clientIp));    // maximum writable buffer size
 
     cout << "\n========== DIAGNOSTIC INFO ==========" << endl; // diagnostic section header
 
@@ -450,7 +450,8 @@ void printDiagnosticInfo(int clientFd, sockaddr_in &clientAddr)
 
     cout << "connection state : CONNECTED" << endl; // TCP connection successfully established
 
-    cout << "=====================================\n" << endl; // diagnostic section footer
+    cout << "=====================================\n"
+         << endl; // diagnostic section footer
 }
 
 /*===========================================================
